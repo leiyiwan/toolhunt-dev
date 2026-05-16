@@ -1,4 +1,4 @@
-baseURL = 'https://toolhunt.dev'
+baseURL = 'https://toolhunt-dev.pages.dev'
 languageCode = 'en-us'
 title = 'ToolHunt'
 theme = 'PaperMod'
