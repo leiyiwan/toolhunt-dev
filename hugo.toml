@@ -1,0 +1,20 @@
+baseURL = 'https://toolhunt.dev'
+languageCode = 'en-us'
+title = 'ToolHunt'
+theme = 'PaperMod'
+
+[params]
+  description = 'Honest reviews and comparisons of the best AI tools, SaaS products, and productivity software'
+  ShowReadingTime = true
+  ShowPostNavLinks = true
+
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+
+[sitemap]
+  changefreq = 'weekly'
+  filename = 'sitemap.xml'
+  priority = 0.5
+
+[permalinks]
+  posts = '/:year/:month/:slug/'
