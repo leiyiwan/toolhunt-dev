@@ -1,136 +1,85 @@
 ---
 title: "Appian vs Make: Low-Code Automation for Business"
-date: 2026-05-18
+date: 2026-05-30T20:44:37+08:00
 draft: false
-tags: ["Appian", "Make", "Zapier", "Workato", "UiPath"]
-categories: ["automation"]
-description: "Appian vs Make: Low-code automation platforms compared for business users in 2026. Speed and complexity."
-summary: "Appian vs Make: Low-code automation platforms compared for business users in 2026. Speed and complexity."
+tags:
+
 ---
 
-## Quick Verdict
+# Appian vs Make：企业低代码自动化平台的抉择
 
-**Appian wins on enterprise-grade process orchestration and AI-driven case management; Make (formerly Integromat) dominates on speed-to-value for departmental integrations.** If you need to automate complex workflows with compliance, case handling, and human-in-the-loop, Appian is the better choice. If you want to connect SaaS tools in hours, not weeks, Make delivers faster at a tenth of the cost.
+**当一家中型物流公司需要在48小时内上线一个客户投诉自动处理系统时，技术负责人面临的不是“要不要自动化”的问题，而是“选哪个平台”的难题。一边是Appian，老牌低代码巨头，2023年营收超过5.4亿美元，企业级客户超过2000家；另一边是Make，新兴的自动化平台，2022年用户数突破50万，月均执行任务超1亿次。这两个平台，代表了低代码自动化领域的两种路径。**
 
-## Comparison Table
+---
 
-| Feature | Appian | Make |
-|---------|--------|------|
-| **Starting price (per user/month)** | ~$90 (per app designer) – custom quote required | Free; Pro $9, Teams $29, Enterprise custom |
-| **Free tier** | 30-day trial, no free permanent plan | Free plan with 1,000 ops/month |
-| **Integrations** | 200+ pre-built connectors via Appian Marketplace + REST/SOAP | 2,000+ connectors (apps and APIs) |
-| **Workflow builder** | Visual BPMN 2.0 process modeler with drag-and-drop | Visual scenario builder with modules and routers |
-| **AI/ML capabilities** | Built-in process mining, low-code AI, document AI | Limited to external AI integrations (e.g., OpenAI, Google AI) |
-| **Case management** | Native case management framework with data, forms, rules | No native case management – relies on app logic |
-| **Mobile support** | Full mobile app with offline capabilities | No dedicated mobile app – responsive web only |
-| **Governance & security** | SOC 2, HIPAA, FedRAMP, role-based access, audit trails | SOC 2, GDPR, RBAC (Enterprise plan) |
-| **Deployment options** | Cloud, on-premises, hybrid | Cloud only (multi-tenant SaaS) |
-| **Scalability** | Designed for 10,000+ users, high-availability clusters | Scales well for SMBs; limits on operations per plan |
-| **Customer support** | Dedicated account manager, 24/7 enterprise support | Email, community, priority support on paid plans |
-| **G2 rating (as of 2026)** | 4.4 / 5 (431 reviews) | 4.6 / 5 (1,829 reviews) |
-| **Best for** | Regulated industries, large enterprises, complex processes | SMBs, marketing ops, lightweight integrations |
+## 一、定位差异：企业级平台 vs 灵活连接器
 
-## Features Deep Dive
+Appian 将自己定位为“低代码自动化平台”，核心卖点是**业务流程管理 + 低代码开发 + 机器人流程自动化**的整合。它更像是一套完整的企业级开发框架，适合构建复杂的、需要多部门协同的业务应用。例如，一家银行可以用Appian搭建贷款审批系统，将表单、审批流、规则引擎、文档管理集成在一个平台上。它的客户名单中，60%以上来自金融、保险、政府等强监管行业。
 
-### Appian: Enterprise Low-Code + Process Automation
+Make（原名Integromat）则更侧重于**轻量级自动化连接**。它本质是一个可视化的工作流编排工具，核心能力是连接2000多个SaaS应用（如Slack、Google Sheets、Salesforce），让非技术人员通过拖拽就能实现数据同步和任务触发。比如，市场部可以用Make自动将表单收集的线索同步到CRM，再发送邮件通知销售。它的用户画像更偏向中小企业和个人开发者。
 
-Appian isn't just a low-code platform – it's a full-stack application development environment with process automation baked in. Here's what sets it apart:
+**关键差异点：**  
+- Appian 需要较长的部署周期（通常2-6个月），团队中往往需要1-2名低代码开发者；Make 可以在几小时内上线一个简单流程，单人即可操作。  
+- Appian 的定价按用户数和企业版功能收费，年费通常在5万-50万美元之间；Make 提供免费套餐（每月1000次操作），专业版起价约29美元/月。  
+- Appian 支持私有化部署，满足数据主权要求；Make 目前仅提供云服务。
 
-**Process Modeling & BPMN 2.0**  
-Appian uses BPMN 2.0 standards, so your workflow diagrams map directly to executable logic. Gates, timers, user tasks, and sub-processes are native. You can model a loan origination flow that spans 15 departments, each with custom rules and SLA timers, without writing code.
+---
 
-**Case Management**  
-Unlike Make, Appian treats each work item as a "case" – a persistent object that holds data, documents, notes, and history. This is essential for claims, compliance reviews, or contract management where context matters over time. Case lifecycle stages trigger automated actions and reassignments.
+## 二、功能对比：谁更擅长解决什么场景？
 
-**AI-Driven Automation**  
-Appian includes process mining (acquired from Lana Labs) that maps your actual process performance against models, identifying bottlenecks. The low-code AI service lets you embed image recognition, document extraction, or text classification without data science teams. For example, automatically extract invoice fields and route the PDF for approval – all in one flow.
+### 场景一：复杂业务流程自动化
+假设一家保险公司需要处理理赔申请，流程包括：客户提交表单 → 系统验证数据 → 调用第三方征信API → 自动派单给不同级别的审核员 → 生成PDF报告 → 归档到内部系统。
 
-**Integration & API Management**  
-While Appian has fewer connectors than Make, its integration framework is deeper. It supports REST, SOAP, JDBC, and even custom Java services. Enterprise users can build API proxies, manage throttling, and enforce security policies within the same platform.
+**Appian 的解决方案：**  
+- 内置流程设计器，支持条件分支、并行任务、超时提醒；  
+- 提供规则引擎，可配置复杂的业务逻辑（如“若理赔金额>1万美元，需经理审批”）；  
+- 支持与核心系统（如SAP、Oracle）深度集成，通过API或数据库直连。  
+- 结果：一个包含20个节点的理赔流程，从设计到上线约需3周。
 
-### Make: Visual Automation for the Rest of Us
+**Make 的解决方案：**  
+- 通过模块化连接器实现：Google Forms接收数据 → HTTP模块调用API → Gmail发送通知 → Google Drive生成PDF。  
+- 但Make不支持复杂的条件循环（如多级审批流转），且缺乏规则引擎，需要依赖外部服务（如Zapier或代码模块）处理逻辑。  
+- 结果：简单理赔流程（5-8个节点）可在1天内搭建，但超过15个节点时，维护成本急剧上升。
 
-Make (formerly Integromat) is a pure-play automation tool focused on simplicity and breadth of integrations.
+**结论：** 对于需要多角色、多系统、多条件分支的复杂流程，Appian 是更可靠的选择；对于简单的“A触发B”型自动化，Make 的效率更高。
 
-**Scenario Builder**  
-Make's editor is a node graph: each module represents an action (e.g., "Create a row in Google Sheets"), and you connect them with data pipes. Aggregators, routers (if/else), and iterators are first-class citizens. A common use: grab new Slack messages, extract attachments, upload to AWS S3, and log in Airtable – all in 10 minutes.
+---
 
-**Data Transformation & Error Handling**  
-Make offers built-in data operators (text, math, arrays) so you can manipulate payloads without JavaScript. It also provides granular error handling: retry on failure, send to a "failure route," or stop the scenario. This is a step up from Zapier's binary success/fail model.
+## 三、生态与扩展性：平台壁垒 vs 开放连接
 
-**Webhooks & Custom API Connectors**  
-You can create webhooks as triggers or actions. If an app isn't in Make's 2,000-strong library, you can build a custom connector using its HTTP module – no coding needed beyond pasting API keys.
+Appian 的生态相对封闭：它的低代码语言（Appian SAIL）是专有的，虽然支持Java和REST API扩展，但二次开发门槛较高。不过，Appian 提供了预构建的行业模板（如“银行开户流程”“医院患者登记”），适合快速复制标准化业务。
 
-**Operations Limits & Scalability**  
-Make's plans cap operations per month (e.g., Free: 1k, Pro: 10k, Teams: 50k). That's fine for small teams, but a high-volume enterprise scenario (like syncing millions of CRM records) will hit ceilings fast. Appian charges by user, not operations, making it more predictable at scale.
+Make 的生态则极其开放：除了2000+现成连接器，还支持Webhook、自定义脚本（Python/JavaScript），甚至能通过HTTP模块调用任意API。这意味着，只要某个服务有API，Make就能连接它。例如，用户可以用Make将Notion的数据库变更同步到Airtable，再触发Slack通知——这种跨应用联动是Appian难以做到的。
 
-## User Experience & Ease of Use
+**数据对比：**  
+- Appian 官方应用市场有约300个模板和插件；  
+- Make 的社区模板超过1万个，且用户可自由分享；  
+- Make 的API调用成本：每1000次操作约0.5美元（专业版）；Appian 的API调用按许可证计费，无单价参考。
 
-Appian has a steeper learning curve. Its interface is dense: a side panel for process modeler, data designer, interface designer, and expression editor. New users typically need 2-3 days of training to build a simple approval flow. The reward is a platform that can handle infinite complexity.  
+---
 
-Make, on the other hand, is immediately intuitive. You drag modules into a canvas, configure them with a click, and test live. Most users can automate their first integration in under 20 minutes. The downside: Make's simplicity becomes a constraint when you need conditional branching with 15+ steps or tight governance.
+## 四、谁更适合你的企业？
 
-**Real-world scenario:** A mid-size insurance company needed to automate new policy applications. With Appian, they built a full case management system (forms, document upload, underwriter task queue, compliance rules) in three weeks. With Make, they'd need to duct-tape together separate apps (Airtable for data, Monday.com for tasks, Slack for notifications) – which works, but lacks audit trails and SLAs.
+选择哪个平台，取决于三个核心维度：
 
-## Pricing & Value
+1. **业务复杂度**  
+   - 如果你的流程涉及多个部门、多个系统、且需要持续迭代（如企业资源规划、合规管理），Appian 的架构更稳定。  
+   - 如果你的需求是部门级的自动化（如市场部线索管理、客服工单流转），Make 的灵活性更出色。
 
-**Appian** starts at roughly $90/user/month for basic platform access, but most deployments add the "AI" and "Automation" modules ($15-$30 extra). A team of 10 process designers runs $1,000-$1,500/month. For an enterprise with 500 users, expect $50k-$100k annually. That's expensive, but includes case management, AI, and 24/7 support.
+2. **团队能力**  
+   - Appian 需要至少1名熟悉低代码开发的员工（或外部顾问），培训周期约2-4周；  
+   - Make 的拖拽式界面几乎无需培训，普通运营人员即可上手。
 
-**Make** is a bargain by comparison. The Pro plan ($9/month/user – yes, user-based but up to 10k ops) covers most SMB needs. The Teams plan ($29/month/user with unlimited ops) is still under $300/month for a small team. For enterprises, Make's Enterprise tier ($custom) adds SSO, audit logs, and guaranteed uptime – but still lacks case management capabilities.
+3. **预算与周期**  
+   - Appian 的初始投入高（10万美元起步），但长期来看，对于超大型企业，它能减少定制开发成本；  
+   - Make 的月费低至29美元，适合快速验证自动化需求，但规模扩大后，操作次数费用可能飙升（每月百万级操作时，成本约500美元）。
 
-**Bottom line:** If you're running 50 automations that move data between CRMs and email, Make pays off in weeks. If you're building a multi-department process that must comply with SOX or HIPAA, Appian's cost is a fraction of the alternative (custom development).
+---
 
-## Pros & Cons
+## 五、总结：没有万能平台，只有匹配场景
 
-### Appian
-**✅ Pros:**  
-- Full case management framework built in  
-- AI process mining and document extraction  
-- High governance – audit trails, roles, on-prem option  
-- Scales to thousands of users with complex SLAs  
+低代码自动化的本质，是让技术服务于业务，而非相反。Appian 像一把瑞士军刀——功能全面、可靠，但需要专业的人来使用；Make 像一把螺丝刀——简单直接，但无法处理重型工程。
 
-**❌ Cons:**  
-- Expensive – $90+/user/month even for simple use cases  
-- Steep learning curve; requires dedicated training  
-- Limited native integrations compared to Make  
+对于大多数中小企业，**从Make起步**是更务实的选择：先用低成本验证自动化价值，当流程复杂度超出其承载能力时，再考虑迁移到Appian这样的企业级平台。而对于金融、政府等强合规行业，**直接选择Appian**能避免后期的数据安全风险。
 
-### Make
-**✅ Pros:**  
-- Extremely fast to setup and iterate  
-- 2,000+ connectors cover most SaaS tools  
-- Affordable even for small businesses  
-- Excellent error handling and data transformation  
-
-**❌ Cons:**  
-- No built-in case management or process mining  
-- Operations limits can choke high-volume scenarios  
-- No on-premises deployment  
-- Enterprise governance is basic unless on highest plan  
-
-## Final Recommendation
-
-**Choose Appian when:** You're in finance, healthcare, insurance, or government – any industry that demands audit trails, case management, and human-in-the-loop compliance. A bank automating loan origination or a hospital managing patient intake will get far more value out of Appian's process engine than Make's connector library.
-
-**Choose Make when:** You're a marketing agency, SaaS startup, or operations team that needs to glue together 10-20 tools fast. If you're automating lead routing, content publishing, or ticket triage – and don't need on-prem or case management – Make is the smarter, cheaper choice.
-
-**Can't decide?** Run a pilot on both. Set up a simple "new customer onboarding" flow in each. Appian will take a week but give you a production-grade app. Make will take 30 minutes and show you the limitations. Your budget and risk tolerance will make the call.
-
-## FAQ
-
-**Q: Can Appian replace Make for basic integrations?**  
-A: Yes, but it's overkill. Appian's integration capabilities are powerful, but you'll pay for features you don't need. For sending Slack messages when a Google Form is submitted, use Make.
-
-**Q: Does Make offer offline mobile access?**  
-A: No. Make is web-only and requires internet. Appian offers full offline mobile capabilities – users can complete tasks, edit forms, and sync later.
-
-**Q: Which platform is better for robotic process automation (RPA)?**  
-A: Neither is dedicated RPA. Appian can integrate with UiPath or Automation Anywhere. Make doesn't have RPA connectors. For UI scraping, look at UiPath directly.
-
-**Q: Can I build a customer-facing portal with these tools?**  
-A: Appian has a native interface designer for portals (claim status, onboarding dashboards). Make cannot build portals; it connects to web apps that you build elsewhere.
-
-**Q: How do the free tiers compare?**  
-A: Appian has a 30-day trial (full features, no credit card). Make's free plan is permanent but limited to 1,000 operations/month – good for testing a single workflow.
-
-**Q: Are there any hidden costs?**  
-A: Appian's per-user pricing can spike if you need "viewer" licenses for stakeholders. Make's operations overage fees on Team plans are $0.00065 per operation – small but can surprise high-volume users.
+最后，无论选择哪个平台，记住一个原则：**自动化不是目的，提升业务效率才是。** 在工具之上，更需要的是对业务流程的深刻理解。
