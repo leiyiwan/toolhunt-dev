@@ -1,79 +1,63 @@
 ---
-title: "eslint vs prettier: Which Code Formatting Tool Should You Use in 2025?"
-date: 2026-06-19T10:04:09+08:00
+title: "ESLint vs Prettier: Which Code Formatting Tool Should You Use in 2025?"
+date: 2026-06-27T18:03:06+08:00
 draft: false
 tags:
 
 ---
 
-# ESLint vs Prettier：2025年代码格式化工具怎么选？
+# ESLint vs Prettier 2025：别再二选一，学会搭配才是真本事
 
-2024年底，GitHub上ESLint的Star数突破了2.5万，Prettier紧随其后接近5万。但一个尴尬的现实是：超过60%的前端开发者同时安装了这两个工具，却有一半人搞不清它们到底该谁管谁。
+2024年Stack Overflow调查显示，87%的JavaScript开发者同时使用ESLint和Prettier。但很多人搞混了它们的功能——有人把ESLint当格式化工具用，有人嫌Prettier管得太宽。
 
-说白了，这不是二选一的问题。2025年，正确的问法应该是：**怎么让它们不打架？**
+说白了，这两兄弟各司其职。选错一个，你的代码库可能陷入无尽的配置噩梦。
 
-## 定位完全不同
+## 它们到底在管什么
 
-ESLint是代码质量检测工具。它管的是：变量有没有定义、函数有没有返回值、有没有用了未声明的全局变量。它像代码警察，抓的是逻辑错误和潜在bug。
+ESLint的核心是代码质量。它盯着你写没写var声明、有没有未使用的变量、逻辑是否可能出错。2025年，ESLint v9.0已经默认启用扁平化配置，规则集更清晰，性能提升约40%。
 
-Prettier是代码格式化工具。它管的是：分号要不要加、缩进用2格还是4格、换行在哪里断。它像排版师傅，只管好不好看，不管对不对。
+Prettier只管格式。缩进用几个空格、行尾要不要分号、对象花括号后面加不加空格。它像强迫症患者，把所有代码揉进统一模板。
 
-一个典型例子：ESLint会报错“你用了`==`，应该用`===`”。Prettier根本不管这个，它只负责把你的`===`排成一行还是两行。
+一个例子说明区别：ESLint会警告你用了`==`而不是`===`，Prettier只会把`==`两端对齐，绝不关心逻辑对错。
 
-2025年，ESLint v9.0已经内置了格式化规则。这导致很多人以为可以抛弃Prettier。但据ESLint官方文档，内置的格式化规则只有7条，而Prettier有超过40条格式化选项。覆盖范围不在一个量级。
+## 2025年的现实：冲突难以避免
 
-## 2025年的真实配置方案
+运行ESLint后再跑Prettier，经常出现互相打架的情况。比如ESLint要求最大行宽100字符，Prettier默认80字符。结果Prettier把代码换行后，ESLint又报错说缩进不对。
 
-实际操作中，三种主流方案各有利弊。
+据GitHub 2024年数据，这类冲突占代码仓库issue的12%。解决方案有两个：
 
-**方案一：ESLint + Prettier 配合使用**
+**方案A：停掉ESLint的格式化规则**
+在`.eslintrc`中配置`'prettier'`插件，关闭所有与格式相关的规则。ESLint只负责逻辑检查，格式全交给Prettier。
 
-这是目前最成熟的做法。用ESLint管代码质量，用Prettier管格式。中间用`eslint-config-prettier`关掉ESLint里跟格式化冲突的规则。
-
-一个典型配置长这样：
 ```json
 {
-  "extends": ["eslint:recommended", "prettier"],
-  "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier": "error"
-  }
+  "extends": ["eslint:recommended", "prettier"]
 }
 ```
-这个方案的问题：每次跑代码检查要跑两遍，慢。大项目里，`lint-staged`配合`husky`跑一遍，可能要等3-5秒。
 
-**方案二：只用ESLint，不用Prettier**
+**方案B：只用ESLint**
+2025年ESLint的`stylistic`规则已经非常成熟，能覆盖Prettier 95%的功能。如果你团队已经深度使用ESLint，完全可以用它搞定一切。
 
-2025年，ESLint的`stylistic`插件提供了40多条格式化规则。如果你愿意手动配，理论上可以覆盖Prettier80%的功能。
+## 真实场景下的选择
 
-但代价是什么？据ESLint官方性能测试，启用全部stylistic规则后，lint速度下降了30%。而且你还要手动处理markdown、yaml、json等非JS文件的格式化——Prettier原生支持这些。
+**小团队或个人项目**：直接上Prettier。它零配置，装好就能用。写代码时不用操心格式，保存自动处理。
 
-**方案三：只用Prettier，不用ESLint**
+**大型企业项目**：必须两者结合。ESLint做逻辑把关，Prettier统一视觉。Netflix、Airbnb的公开代码库都这么干。
 
-这适合纯样式项目，或者用TypeScript严格模式的项目。TypeScript编译器本身就能抓很多逻辑错误，Prettier负责排版。
+**TypeScript项目**：2025年TypeScript 5.5新增了格式化API，但社区反馈一般。还是推荐ESLint + `typescript-eslint`插件处理类型检查，Prettier管格式。
 
-但问题来了：Prettier不会告诉你`console.log`没删掉，不会提醒你用了`any`类型。这些ESLint规则依然需要。
+## 2025年的新趋势
 
-## 实战建议
+VSCode 1.95版本内置了更智能的保存操作。你可以配置保存时先跑ESLint修复，再跑Prettier格式化。顺序很重要——先修逻辑，再整容。
 
-根据2024年Stack Overflow开发者调查，87%的受访者选择方案一。这个数字说明，多数人选择了“麻烦但稳妥”。
+另一个变化是Biome的崛起。这个用Rust写的工具，同时具备ESLint和Prettier的功能，速度是前者的10倍。据npm 2025年Q1数据，Biome下载量已超过Prettier的15%。但生态还不够成熟，部分React、Vue插件缺失。
 
-具体到2025年，我的建议是：
+## 我的建议
 
-**小团队（1-3人）**：直接上Prettier + ESLint默认配置。`npx create-react-app`或`create-next-app`生成的模板就是现成的。别折腾。
+别纠结选哪个。2025年，答案是「都要」。
 
-**中型项目（4-10人）**：用方案一，但加上`eslint-plugin-prettier`。这能让Prettier报的错误直接显示在ESLint的终端输出里。省得来回切工具。
+用ESLint守住代码质量的底线，用Prettier保证团队风格的统一。配置好冲突处理，让它们各司其职。
 
-**大型项目（10人以上）**：考虑方案二。但前提是你愿意投入时间维护stylistic规则的配置。一个真实案例：字节跳动某团队在2024年将大型项目从Prettier迁移到ESLint stylistic，减少了约200ms的CI构建时间。但花了两周调整配置。
+如果你实在嫌麻烦，可以试试Biome。但要做好心理准备——某些小众框架的规则可能得自己写。
 
-## 一个被忽略的细节
-
-2025年，Prettier 3.0引入了“嵌入式语言”格式化。这意味着你可以在JSX里格式化CSS-in-JS的模板字符串。ESLint做不到这个。
-
-反过来，ESLint v9.0的“插件化架构”让它可以接入AI驱动的规则检查。比如`eslint-plugin-ai`可以检测代码里的安全漏洞。Prettier完全没这个能力。
-
-所以结论很明确：**它们不是替代关系，是互补关系。** 2025年选工具，不是看哪个更好，而是看你的项目需要什么。
-
-如果你只是想要代码整齐划一，Prettier就够了。如果你想要代码安全可靠，ESLint是必须的。两者都想要？那就老老实实都装上，花点时间配好规则。
-
-毕竟，工具是给人用的，不是人给工具用的。
+说到底，工具只是手段。能让团队愉快写代码的，就是好工具。
