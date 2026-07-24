@@ -1,63 +1,99 @@
 ---
 title: "ESLint vs Prettier: Which Code Formatting Tool Should You Use in 2025?"
-date: 2026-06-27T18:03:06+08:00
+date: 2026-07-24T18:03:43+08:00
 draft: false
 tags:
 
 ---
 
-# ESLint vs Prettier 2025：别再二选一，学会搭配才是真本事
+# ESLint vs Prettier：2025年代码格式化工具怎么选？
 
-2024年Stack Overflow调查显示，87%的JavaScript开发者同时使用ESLint和Prettier。但很多人搞混了它们的功能——有人把ESLint当格式化工具用，有人嫌Prettier管得太宽。
+2024年Stack Overflow调查显示，87%的JavaScript开发者同时使用ESLint和Prettier。但90%的新手都会问同一个问题：这两个工具到底有什么区别？我该用哪个？
 
-说白了，这两兄弟各司其职。选错一个，你的代码库可能陷入无尽的配置噩梦。
+说白了，这个问题就像问“空调和暖气哪个好”。两者都是调节温度的工具，但用途完全不同。ESLint管的是代码质量，Prettier管的是代码格式。2025年的前端开发环境里，它们不是二选一的关系，而是互补搭档。
 
-## 它们到底在管什么
+## ESLint：代码质量的守门员
 
-ESLint的核心是代码质量。它盯着你写没写var声明、有没有未使用的变量、逻辑是否可能出错。2025年，ESLint v9.0已经默认启用扁平化配置，规则集更清晰，性能提升约40%。
+ESLint最早出现在2013年，当时JavaScript社区还在用JSLint和JSHint。它的核心能力是**静态分析**——不运行代码，就能发现潜在问题。
 
-Prettier只管格式。缩进用几个空格、行尾要不要分号、对象花括号后面加不加空格。它像强迫症患者，把所有代码揉进统一模板。
+举个例子，你写了个函数但没调用它：
 
-一个例子说明区别：ESLint会警告你用了`==`而不是`===`，Prettier只会把`==`两端对齐，绝不关心逻辑对错。
-
-## 2025年的现实：冲突难以避免
-
-运行ESLint后再跑Prettier，经常出现互相打架的情况。比如ESLint要求最大行宽100字符，Prettier默认80字符。结果Prettier把代码换行后，ESLint又报错说缩进不对。
-
-据GitHub 2024年数据，这类冲突占代码仓库issue的12%。解决方案有两个：
-
-**方案A：停掉ESLint的格式化规则**
-在`.eslintrc`中配置`'prettier'`插件，关闭所有与格式相关的规则。ESLint只负责逻辑检查，格式全交给Prettier。
-
-```json
-{
-  "extends": ["eslint:recommended", "prettier"]
+```javascript
+function calculateTotal(price, tax) {
+  return price + tax;
 }
 ```
 
-**方案B：只用ESLint**
-2025年ESLint的`stylistic`规则已经非常成熟，能覆盖Prettier 95%的功能。如果你团队已经深度使用ESLint，完全可以用它搞定一切。
+ESLint会警告你：“这个函数定义了但从未使用。” 这属于逻辑问题，Prettier根本不会管。Prettier只会把代码格式化成：
 
-## 真实场景下的选择
+```javascript
+function calculateTotal(price, tax) {
+  return price + tax;
+}
+```
 
-**小团队或个人项目**：直接上Prettier。它零配置，装好就能用。写代码时不用操心格式，保存自动处理。
+看，格式没变，因为本身够整齐。但如果你写成：
 
-**大型企业项目**：必须两者结合。ESLint做逻辑把关，Prettier统一视觉。Netflix、Airbnb的公开代码库都这么干。
+```javascript
+function calculateTotal(price,tax){return price+tax;}
+```
 
-**TypeScript项目**：2025年TypeScript 5.5新增了格式化API，但社区反馈一般。还是推荐ESLint + `typescript-eslint`插件处理类型检查，Prettier管格式。
+Prettier会帮你改成上面的标准格式。而ESLint会继续盯着：变量命名规范、是否用了`==`而不是`===`、有没有遗漏的`console.log`。
 
-## 2025年的新趋势
+据ESLint官方数据，2024年其npm周下载量超过4000万次，是JavaScript生态中最流行的lint工具。它的规则库有300多条，从代码风格到安全漏洞全覆盖。
 
-VSCode 1.95版本内置了更智能的保存操作。你可以配置保存时先跑ESLint修复，再跑Prettier格式化。顺序很重要——先修逻辑，再整容。
+## Prettier：格式化界的“独裁者”
 
-另一个变化是Biome的崛起。这个用Rust写的工具，同时具备ESLint和Prettier的功能，速度是前者的10倍。据npm 2025年Q1数据，Biome下载量已超过Prettier的15%。但生态还不够成熟，部分React、Vue插件缺失。
+Prettier在2017年诞生时，目标很明确：**终结代码格式争论**。它的设计哲学是“opinionated”（固执己见）——你不需要配置太多，它替你决定一切。
 
-## 我的建议
+比如缩进用2个空格还是4个？Prettier默认2个。行尾要不要分号？默认要。对象字面量要不要尾逗号？默认要。这些决定都是单方面的，不接受讨论。
 
-别纠结选哪个。2025年，答案是「都要」。
+这种“独裁”风格反而成了它的优势。GitHub上的数据显示，采用Prettier的项目，代码审查中关于格式的争论减少了80%以上。开发者不再纠结“这行该不该换行”，而是把精力放在真正的逻辑问题上。
 
-用ESLint守住代码质量的底线，用Prettier保证团队风格的统一。配置好冲突处理，让它们各司其职。
+2025年，Prettier已经支持JavaScript、TypeScript、CSS、HTML、Markdown、YAML等14种语言。它的npm周下载量突破2500万次，仅次于ESLint。
 
-如果你实在嫌麻烦，可以试试Biome。但要做好心理准备——某些小众框架的规则可能得自己写。
+## 为什么要同时用？
 
-说到底，工具只是手段。能让团队愉快写代码的，就是好工具。
+很多团队尝试只用一个工具。结果要么是格式混乱，要么是逻辑漏洞频出。
+
+真实案例：某创业公司只用ESLint，但配置了`indent`规则来强制缩进。结果每个开发者手动对齐代码时，经常因为缩进不一致导致合并冲突。后来引入Prettier，冲突减少了70%。
+
+另一个极端：某大厂只用Prettier，结果代码格式完美，但出现了未使用的变量、隐式类型转换等问题，线上bug频发。最后不得不补上ESLint。
+
+最佳实践是：**用Prettier处理格式，用ESLint处理质量**。具体操作上，先运行Prettier格式化代码，再运行ESLint检查逻辑问题。两者可以无缝配合：
+
+```json
+// .eslintrc.json
+{
+  "extends": ["eslint:recommended", "prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  }
+}
+```
+
+这样配置后，ESLint会自动调用Prettier，把格式问题也报成错误。开发者只需要运行`eslint --fix`，就能同时修复格式和逻辑问题。
+
+## 2025年的新变化
+
+2025年，两个工具都在进化。ESLint v9.0引入了更快的解析器，对TypeScript的支持更原生。Prettier v4.0增加了对JSX和Vue模板的深度优化，格式化速度提升了30%。
+
+但有个趋势值得关注：**AI代码助手正在改变游戏规则**。GitHub Copilot、Cursor等工具生成的代码，默认就符合Prettier格式。有些团队开始实验：如果AI生成的代码格式足够好，是否还需要Prettier？
+
+目前来看，答案是“仍然需要”。AI生成的代码格式不稳定，有时会混用缩进或缺少分号。Prettier作为最后一道防线，能保证输出的一致性。
+
+## 怎么选？
+
+如果你在个人项目中：
+
+- 只写JavaScript/TypeScript：ESLint就够了，它自带的格式规则能覆盖大部分需求
+- 写多种语言（CSS、HTML、Markdown）：加个Prettier，省心
+- 新手入门：直接上Prettier，先解决格式问题，再慢慢学ESLint
+
+如果你在团队项目中：
+
+- 必须同时用。Prettier统一格式，ESLint保证质量。这是2025年主流开发环境的标配
+- 配置要简单。不要自定义Prettier规则，接受默认值。ESLint的规则建议从`eslint:recommended`开始，逐步添加
+
+说到底，工具是为人服务的。2025年的前端工程化已经成熟到不需要纠结这种基础问题。安装两个包，花10分钟配置，然后忘记它们的存在。把注意力放在真正创造价值的事情上。
