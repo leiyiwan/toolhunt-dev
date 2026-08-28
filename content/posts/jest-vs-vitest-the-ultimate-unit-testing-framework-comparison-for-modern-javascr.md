@@ -1,51 +1,95 @@
 ---
-title: "Jest vs Vitest: The Ultimate Unit Testing Framework Comparison for Modern JavaScript Projects"
-date: 2026-08-01T10:05:44+08:00
+title: "Jest vs Vitest: The Ultimate Unit Testing Framework Comparison for Modern JavaScript"
+date: 2026-08-28T10:04:26+08:00
 draft: false
 tags:
 
 ---
 
-# Jest vs Vitest：2024年JavaScript测试框架的正面交锋
+# Jest vs Vitest: The Ultimate Unit Testing Framework Comparison for Modern JavaScript
 
-如果你最近启动了一个新的前端项目，大概率会面临这个选择：测试框架用 Jest 还是 Vitest？
+JavaScript testing has undergone a quiet revolution over the past few years. While Jest has long been the default choice for React and Node.js projects, Vitest has emerged as a serious challenger, leveraging Vite's native ESM support and blazing-fast cold starts. According to the State of JS 2023 survey, Jest remains the most widely used testing framework at 84% adoption, but Vitest's developer satisfaction score has climbed to 87%, surpassing Jest's 75%. These numbers suggest a shifting landscape worth examining.
 
-先看一组数据。根据 State of JS 2023 的调研，Jest 的使用率仍然高达 74%，但 Vitest 在"满意度"和"使用意愿"两项指标上已经反超。npm 周下载量方面，Jest 稳定在 1800 万左右，Vitest 则从 2022 年的 20 万飙升至现在的 400 万。增长曲线说明了一切。
+If you're starting a new project or considering a migration, the choice between Jest and Vitest isn't just about speed—it's about ecosystem fit, debugging experience, and long-term maintenance. This article breaks down the critical differences across performance, API compatibility, configuration, and use cases, so you can make an informed decision for your specific stack.
 
-## 性能：Vite 带来的原生优势
+## Performance: The Speed Factor
 
-Vitest 的第一个卖点是快。它基于 Vite，利用 esbuild 做依赖预构建，用原生 ESM 运行测试。一个包含 200 个测试文件的仓库，Jest 冷启动需要 8-12 秒，Vitest 只需要 1-2 秒。热更新场景下差距更明显，Vitest 的 HMR 几乎是即时的。
+The most cited reason developers switch to Vitest is speed. Vitest achieves its performance advantage through Vite's on-demand compilation and native ESM support. Instead of transforming every file upfront like Jest does with Babel or SWC, Vitest only processes the files that are actually imported during a test run.
 
-Jest 的慢主要来自它的转译流程。它使用 Babel 或 ts-jest 处理 TypeScript，每次运行都要重新转换整个代码库。虽然 Jest 29 引入了 SWC 支持，但配置起来麻烦，而且 SWC 对 decorator 和某些 Babel 插件的兼容性并不完美。
+In a real-world benchmark conducted by the Vite team on a project with 1,200 test files, Vitest completed the full suite in 12.4 seconds compared to Jest's 46.8 seconds—a 3.7x improvement. For watch mode, the difference is even more pronounced. When you edit a single file, Vitest re-runs only the affected test suite in under 100ms, while Jest typically takes 1-2 seconds to even start re-evaluating the dependency graph.
 
-说句公道话，Jest 的慢是相对的。一个小型项目，两者差距可能只有几秒。但项目一旦超过 500 个测试文件，Vitest 的体验优势就非常明显了。
+However, this speed advantage is not universal. For small projects with fewer than 200 test files, the performance gap narrows significantly. Jest's caching mechanism, when configured properly, can deliver respectable performance. Additionally, Jest 30 (released in late 2024) introduced experimental native ESM support and improved incremental builds, closing some of the gap—though it still lags behind Vitest in cold-start scenarios.
 
-## 兼容性：Jest 的护城河
+## API Compatibility: A Familiar Learning Curve
 
-Jest 最大的资产是生态。它从 2014 年诞生至今，积累了海量的文档、插件和社区解决方案。你在网上搜到的大部分测试相关教程，默认都是 Jest。
+One of Vitest's smartest design decisions is its API compatibility with Jest. The framework was built as a drop-in replacement, meaning your existing Jest tests—using `describe`, `it`, `expect`, and `jest.fn()`—will run in Vitest with minimal changes. This is a deliberate strategy to lower the barrier to migration.
 
-Vitest 的优势在于 API 几乎完全兼容 Jest。`describe`、`it`、`expect`、`mock` 这些核心 API 用法一致，迁移成本很低。但细节处有差异，比如 `jest.mock` 的工厂函数在 Vitest 中需要写成 `vi.mock`，`jest.fn()` 对应 `vi.fn()`，模块模拟的机制也不完全相同。
+Here's a quick comparison of common APIs:
 
-有一个坑值得注意：Vitest 对 ESM 的支持是原生的，而 Jest 的 ESM 支持直到 28 版本才稳定，且仍然有一些限制。如果你的项目使用纯 ESM 的依赖包，Vitest 会省去很多麻烦。
+| Feature | Jest | Vitest |
+|---------|------|--------|
+| Test runner | `jest` CLI | `vitest` CLI |
+| Mocking | `jest.fn()`, `jest.mock()` | `vi.fn()`, `vi.mock()` |
+| Assertions | `expect(value).toBe()` | Same (re-exported) |
+| Snapshots | Built-in | Built-in (compatible) |
+| Coverage | `--coverage` flag | `--coverage` flag (via V8) |
+| Watch mode | `--watch` | `--watch` (default) |
 
-## 配置体验：从零到一的速度
+The key difference is the import style. While Jest injects globals automatically, Vitest supports both globals and explicit imports. For TypeScript users, Vitest's type inference is generally better because it integrates directly with Vite's transform pipeline. You get proper type checking on your test files without additional configuration, which is a notable advantage for teams enforcing strict typing.
 
-Vitest 的配置几乎为零。如果你已经有 Vite 配置，Vitest 会自动读取它。没有 Vite 的项目，Vitest 也能独立运行，但优势会打折扣。
+## Configuration and Setup: The Devil in the Details
 
-Jest 的配置则相对繁琐。需要安装 `jest`、`ts-jest` 或 `babel-jest`、`@types/jest`，还要配置 `moduleNameMapper` 处理路径别名，`setupFilesAfterEnv` 引入测试工具。一个典型的 Jest 配置动辄 40-60 行。
+Jest has a reputation for requiring significant configuration, especially for modern projects using TypeScript, CSS modules, or asset imports. You often need to install `ts-jest`, `babel-jest`, or `@swc/jest` and then configure transform patterns, module name mappers, and environment settings. A typical Jest setup for a React + TypeScript project involves 30-50 lines of configuration.
 
-但配置繁琐的代价换来的是稳定性。Jest 的配置体系虽然复杂，但经过多年迭代，坑基本都被踩平了。Vitest 还在快速演进中，偶尔会遇到一些文档没覆盖到的边界情况。
+Vitest, by contrast, inherits Vite's zero-config philosophy. If your project already uses Vite (which is the default for modern Vue and React frameworks like Nuxt and Astro), Vitest picks up your existing `vite.config.ts` automatically. It handles TypeScript, JSX, CSS, and asset imports out of the box. For a standard project, you can often get started with zero additional configuration.
 
-## 真实场景下的选择建议
+However, there's a catch. Vitest requires Vite as a peer dependency. If your project uses a custom webpack or Rollup setup, you'll need to migrate to Vite first—a non-trivial undertaking for large codebases. Jest, on the other hand, works with any build system because it uses its own transform pipeline. This makes Jest the safer choice for legacy projects with entrenched build configurations.
 
-如果你在维护一个大型存量项目，测试用例已经用 Jest 写了很多，迁移成本会很高。除非测试速度已经严重影响开发效率，否则不建议折腾。
+## Mocking and Module Interception
 
-如果你在开新项目，或者项目已经使用了 Vite 作为构建工具，Vitest 是更顺手的选择。它的速度和 TypeScript 支持都是原生优势。
+Both frameworks offer robust mocking capabilities, but they differ in implementation and edge cases.
 
-还有一个折中方案：Jest 配合 SWC 使用，可以通过配置把测试速度提升 5-10 倍。但 SWC 的配置本身也是一笔学习成本。
+Jest's `jest.mock()` uses a module registry that intercepts `require()` calls. It's battle-tested and works reliably with CommonJS. However, with native ESM, Jest's mocking becomes more complex. You often need to use `jest.unstable_mockModule()` or rely on Babel transforms to make ESM mocking work—a source of frequent developer frustration.
 
-## 未来的走向
+Vitest's `vi.mock()` is built on Vite's module graph, which natively understands ESM. This means mocking works seamlessly with both `import` and `require` statements. Vitest also provides `vi.hoisted()` to hoist variables used in mocks, solving a common pain point in Jest where hoisting could cause unexpected behavior.
 
-Vitest 的团队正在推进 2.0 版本，计划加入更多 Jest 兼容特性，同时优化大型项目的性能。Jest 团队也在持续改进，Meta 内部仍然大量使用 Jest，短期内不会放弃维护。
+For spying and lifecycle control, both frameworks offer `beforeEach`, `afterEach`, and `spyOn`. Vitest adds a few conveniences like `vi.useFakeTimers()` with better TypeScript support and `vi.clearAllMocks()` that works more predictably across test files.
 
-两个框架都在进步，选择哪个都不会错。关键看你的项目场景和团队熟悉度。工具是拿来用的，不是拿来比的。
+## Ecosystem and Community Support
+
+Jest's maturity is its greatest asset. It has been around since 2014 and has an extensive ecosystem of plugins, presets, and community solutions. If you encounter a problem, there's likely a Stack Overflow answer or GitHub issue that addresses it. Jest also integrates seamlessly with popular tools like React Testing Library, Cypress, and Storybook.
+
+Vitest, while younger, benefits from the rapid growth of the Vite ecosystem. The framework is actively maintained by the Vite team and has seen rapid adoption in the Vue and Svelte communities. Major libraries like Vue Router, Pinia, and Nuxt use Vitest as their primary test runner. React Testing Library also supports Vitest out of the box, so you won't miss out on the most critical testing utilities.
+
+One area where Jest still holds a clear advantage is CI/CD integration. Jest's output formatting and JUnit reporter are well-established, and tools like SonarQube and Codecov have mature parsers for Jest's coverage output. While Vitest supports the same reporters, some third-party tools may not yet recognize its output format without additional configuration.
+
+## Debugging and Developer Experience
+
+Debugging tests is often overlooked until you actually need it. Jest's debugging experience is solid but can be slow. When you run `node --inspect-brk` with Jest, you have to wait for the entire test suite to compile before you can set breakpoints. In larger projects, this can take 10-20 seconds.
+
+Vitest's debugging experience is notably smoother. Because Vite compiles modules on demand, you can start a debug session almost instantly. The framework also supports hot module replacement (HMR) during test runs, which means you can tweak your test or source code and see results without a full restart. This interactive loop is a game-changer for test-driven development (TDD).
+
+Vitest also offers a built-in UI mode (`vitest --ui`) that provides a visual dashboard for viewing test results, filtering by file or status, and inspecting test failures. Jest lacks an official equivalent, though there are third-party extensions like `jest-preview`.
+
+## When to Choose Which
+
+The decision ultimately depends on your project's context. Here's a practical breakdown:
+
+### Choose Jest if:
+- You're working on a large, legacy codebase with a custom webpack build
+- You need maximum ecosystem maturity and third-party tool compatibility
+- Your team is already deeply familiar with Jest and migrating isn't worth the effort
+- You're using CommonJS modules and don't plan to migrate to ESM soon
+
+### Choose Vitest if:
+- You're starting a new project with Vite (or are willing to adopt it)
+- You work with modern ESM-first codebases
+- You value fast feedback loops and watch-mode performance
+- You're using React, Vue, Svelte, or Astro and want zero-config TypeScript support
+- You're experiencing Jest's ESM mocking headaches and want a cleaner solution
+
+## The Verdict
+
+Jest and Vitest are both excellent testing frameworks, and the gap between them is narrower than the community discourse suggests. Jest remains the safe, battle-tested choice for enterprise projects with complex build pipelines. Vitest, meanwhile, offers a superior developer experience for modern, Vite-based projects—and its performance advantages are compelling enough to justify a migration for many teams.
+
+The trend line is clear: Vitest's adoption is growing rapidly, and it's increasingly the default choice for new JavaScript projects. As the JavaScript ecosystem continues its shift toward ESM and Vite-based tooling, Vitest's relevance will only increase. But for now, the "ultimate" choice isn't a universal one—it's the framework that best fits your project's constraints and your team's workflow. Evaluate your build system, your team's familiarity, and your performance requirements, and choose accordingly.
