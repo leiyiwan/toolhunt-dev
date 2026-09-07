@@ -1,6 +1,6 @@
 ---
 title: "ESLint vs Biome: A Head-to-Head Performance and Rule-Set Comparison for Modern JavaScript Projects"
-date: 2026-08-23T10:02:27+08:00
+date: 2026-09-07T18:02:42+08:00
 draft: false
 tags:
 
@@ -8,72 +8,65 @@ tags:
 
 # ESLint vs Biome: A Head-to-Head Performance and Rule-Set Comparison for Modern JavaScript Projects
 
-The JavaScript tooling ecosystem has always been a landscape of rapid evolution, but the past two years have introduced a particularly seismic shift. For over a decade, ESLint has been the undisputed champion of code linting, with a plugin ecosystem so vast it became the default choice for teams of every size. Then, in 2023, Biome emerged from the ashes of the Rome project, promising not just incremental improvements but a complete paradigm shift in speed and developer experience.
+If you’ve spent more than five minutes in a modern JavaScript repository, you’ve likely felt the sting of waiting for a lint run to finish. A typical mid-sized monorepo running ESLint can take anywhere from 10 to 30 seconds on a cold cache. Multiply that by every developer on your team, every pre-commit hook, and every CI pipeline, and you’re burning serious engineering hours.
 
-The question is no longer "Should we lint our code?" but "Which tool should we trust with our codebase?" This comparison dives deep into the performance metrics, rule coverage, and migration practicalities of ESLint versus Biome, offering a data-driven look at what each tool brings to a modern JavaScript workflow.
+Enter Biome. Formerly known as Rome, this toolchain rebranded in 2023 with a singular promise: drop-in JavaScript linting and formatting at Rust speed. But speed alone doesn’t win over a community that has spent a decade building ESLint’s plugin ecosystem. This article compares the two tools across performance benchmarks, rule coverage, extensibility, and real-world usability to help you decide which belongs in your stack.
 
-## The Contenders: A Brief Context
+## The Performance Gap: Benchmarks That Actually Matter
 
-**ESLint** is the incumbent. Born in 2013, it has grown into a monolith of configurability. Its architecture is plugin-based, allowing teams to mix and match rules from `eslint:recommended`, `typescript-eslint`, `eslint-plugin-react`, and hundreds of others. Its power lies in its extensibility, but that power comes at the cost of speed—it relies on Node.js's single-threaded runtime and parses files using a complex AST (Abstract Syntax Tree) traversal.
+Let’s address the elephant in the room. Biome is fast—not "faster" in the marketing sense, but orders of magnitude faster. In the official Biome benchmark suite, the tool lints a codebase of roughly 20,000 files in about 0.3 seconds. ESLint, configured with the popular `eslint:recommended` set and TypeScript parser, takes approximately 7.5 seconds on the same machine for the same task. That’s a 25x difference.
 
-**Biome** is the challenger. Written in Rust, it is not just a linter but a full toolchain that also includes a formatter (a drop-in Prettier replacement). Biome's selling point is its raw speed—it runs on multiple threads, uses a highly optimized parser, and skips the overhead of Node.js entirely. It positions itself as a "toolchain for the web," aiming to consolidate the fragmented JavaScript tooling space.
+But raw speed only tells part of the story. The more relevant metric for daily development is *incremental* performance—how long does it take to re-lint a single file after you’ve made a change? ESLint’s caching mechanism (`--cache` flag) helps, but it still needs to parse the file and traverse its AST. Biome, written in Rust and using a parallel architecture, can re-analyze a single file in under 5 milliseconds. For most developers, this means linting becomes effectively instant, which changes your workflow. You stop running lint as a separate step and start relying on it as a live feedback loop in your editor.
 
-## Performance: The Benchmark Showdown
+One caveat: Biome’s speed advantage narrows when you rely heavily on TypeScript type-aware linting. ESLint with `parserOptions.project` performs type checking, which is inherently slower but catches a class of bugs that pure syntax analysis cannot. Biome does not yet perform full type checking for lint rules. So the performance comparison is not entirely apples-to-apples—it’s more like comparing a sports car to a pickup truck. The sports car is faster, but the truck can carry more cargo.
 
-Performance is where Biome has drawn the sharpest battle lines. In the JavaScript community, "fast" is a relative term, but the benchmarks here are not marginal differences—they are orders of magnitude.
+## Rule Coverage: Where the Ecosystem Still Wins
 
-### Cold Start and Initial Run
+ESLint’s greatest asset is not its core—it’s the massive plugin ecosystem. As of early 2025, there are over 3,000 community plugins available on npm. The most essential ones for modern JavaScript projects include:
 
-In a controlled benchmark on a mid-sized repository (around 2,000 files), ESLint's initial run typically takes **8 to 12 seconds** on modern hardware. This includes loading the config, parsing the files, and applying rules. Biome, in contrast, completes the same task in **under 500 milliseconds**. This is not a 2x or 3x improvement; it is a 15x to 20x speedup.
+- **typescript-eslint**: Provides type-aware rules like `no-unsafe-member-access` and `no-floating-promises`
+- **eslint-plugin-react**: Covers JSX-specific patterns, prop-types, and hooks rules
+- **eslint-plugin-import**: Enforces import ordering, no-cycle detection, and path validation
+- **eslint-config-next**: Next.js’s opinionated defaults tailored to App Router and Server Components
 
-The primary reason is architectural. ESLint must load a JavaScript runtime, parse your config file, resolve plugins, and then execute rules sequentially. Biome compiles its logic into a native binary. It reads your config in milliseconds and uses parallel processing to lint multiple files simultaneously, leveraging all CPU cores.
+Biome, by contrast, ships with approximately 200 built-in rules. That number is growing, but the coverage is still heavily weighted toward stylistic and correctness rules. For example, Biome supports `noUnusedVariables`, `noConstantCondition`, and `useExhaustiveDependencies` (the React hooks equivalent). However, it does not yet offer deep integration with framework-specific concerns like Next.js’s `next/image` optimization rules or Vue’s template compiler linting.
 
-### Watch Mode and Incremental Linting
+The practical implication is this: if your project is a vanilla TypeScript library or a React app with standard patterns, Biome’s rule set covers 80-90% of what you need. If you’re working with a complex monorepo, custom ESLint plugins, or framework-specific conventions, you’ll likely hit a wall where Biome simply doesn’t have an equivalent rule—and you’ll be forced to either disable the check or write a custom rule in Rust (which is a steep learning curve compared to writing a JavaScript ESLint plugin).
 
-For developers using `--watch` mode, the difference is even more pronounced. ESLint's watch mode often has a noticeable lag—up to 1-2 seconds per save on large files. Biome's watch mode is effectively instantaneous, with feedback appearing in the terminal before you have even switched back to your browser.
+## Configuration and DX: A Tale of Two Philosophies
 
-This performance gap has real implications for CI/CD pipelines. On a GitHub Actions runner, ESLint can add 30-60 seconds to a build. Biome reduces that to nearly zero. For teams with strict deployment timelines, this is not just a convenience; it is a competitive advantage.
+ESLint’s configuration has historically been a source of frustration. The shift from `.eslintrc` (JSON/YAML) to the flat config system (introduced in ESLint v9) was a major overhaul, but it still requires you to understand concepts like `plugins`, `extends`, `parserOptions`, and `settings`. A typical modern ESLint config for a TypeScript React project can easily exceed 80 lines.
 
-## Rule-Set Coverage: Quality vs. Quantity
+Here’s a minimal example of ESLint flat config:
 
-Speed is meaningless if the tool doesn't catch the right issues. Here, the comparison becomes more nuanced.
+```js
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import reactHooks from 'eslint-plugin-react-hooks';
 
-### ESLint's Expansive Ecosystem
+export default [
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['**/*.{ts,tsx}'],
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn'
+    }
+  }
+];
+```
 
-ESLint's greatest asset is its library of rules. The core package includes around 300 rules, but the real power lies in the plugins. With `typescript-eslint`, you get over 200 additional rules for type-aware linting. `eslint-plugin-react` adds another 100+ for JSX-specific concerns. There are plugins for security (eslint-plugin-security), accessibility (eslint-plugin-jsx-a11y), and even specific frameworks like Next.js or Vue.
-
-This breadth means ESLint can catch subtle type-coercion bugs, enforce specific React prop patterns, and flag complex accessibility issues that Biome simply does not have rules for. For large enterprise codebases with legacy code, this granular control is often a non-negotiable requirement.
-
-### Biome's Curated, Opinionated Set
-
-Biome takes a different philosophy. Instead of offering 800+ rules, it ships with a curated set of about **200 rules** in its current stable release. These rules are heavily weighted toward catching actual bugs and enforcing stylistic consistency. The team has explicitly stated they prioritize high-signal rules over noise.
-
-For example, Biome includes excellent coverage for:
-- **No-unused-variables**: Catches dead code effectively.
-- **No-explicit-any**: Enforces TypeScript clarity.
-- **Correctness checks**: Like detecting invalid regex or unreachable code.
-
-However, Biome lacks the deep type-aware analysis that `typescript-eslint` provides. ESLint can use the TypeScript compiler API to analyze types across files, catching issues like using a property that doesn't exist on a union type or passing the wrong type to a function. Biome currently performs syntactic and semantic analysis but does not do full type-checking. This is the single biggest functional gap.
-
-## Configuration and DX: The Learning Curve
-
-### ESLint's Flexibility (and Complexity)
-
-ESLint's configuration is famously flexible and famously frustrating. The shift from `.eslintrc` (JSON/YAML) to the newer flat config (`eslint.config.js`) in ESLint v9 was a necessary modernization, but it introduced a steep learning curve. A typical config for a React+TypeScript project can be 50-100 lines long, requiring imports of multiple plugins and careful ordering of overrides.
-
-This complexity is a double-edged sword. It allows for incredibly fine-tuned control, but it also leads to configuration drift across teams. A common scenario: a developer adds a new rule to the config, and a month later, a different developer removes it because it conflicts with their local setup.
-
-### Biome's Zero-Config Start
-
-Biome's configuration is a model of simplicity. A basic `biome.json` file can be just a few lines:
+Biome’s configuration is deliberately minimal. A `biome.json` file with sensible defaults looks like this:
 
 ```json
 {
   "formatter": {
-    "enabled": true
+    "indentStyle": "space",
+    "indentWidth": 2
   },
   "linter": {
-    "enabled": true,
     "rules": {
       "recommended": true
     }
@@ -81,34 +74,40 @@ Biome's configuration is a model of simplicity. A basic `biome.json` file can be
 }
 ```
 
-That's it. You get a sensible default set of rules and formatting out of the box. For teams tired of debugging ESLint's config resolution, this is a breath of fresh air. Biome also ships with a `biome migrate` command that can automatically convert your existing ESLint config to Biome's format, though this works best for projects with simple configs.
+That’s it. Biome’s philosophy is "convention over configuration." The defaults are opinionated but reasonable, and you only add overrides when you have a specific reason. For teams that suffer from configuration fatigue, Biome feels like a breath of fresh air. However, for teams that rely on heavily customized rule sets (e.g., enforcing specific import order or banning certain patterns across a monorepo), Biome’s limited configuration surface can feel restrictive.
 
-## The Migration Path: Is It Worth It?
+## Migration Realities: What You’ll Lose and Gain
 
-### When to Stick with ESLint
+If you’re considering switching, the migration story is more nuanced than running `npx @biomejs/biome migrate`. The tool does a decent job of translating common ESLint rules to Biome equivalents, but it won’t catch everything. Here’s what you’ll likely lose in the move:
 
-You should stay with ESLint if:
-- You rely heavily on **type-aware linting** for TypeScript.
-- You use niche plugins (e.g., `eslint-plugin-tailwindcss` or `eslint-plugin-import` for path aliases).
-- You have a large monorepo with deeply nested, customized configs.
-- Your team has existing, working ESLint configurations that nobody wants to touch.
+1. **Type-aware rules**: `no-unsafe-argument`, `no-implied-eval`, and `strict-boolean-expressions` are all dependent on TypeScript’s type checker. Biome doesn’t support these yet. You’ll need to rely on your IDE’s TypeScript diagnostics for some of these checks.
 
-The migration cost for complex setups is high. You would need to audit every custom rule, find Biome equivalents, and potentially lose some checks entirely.
+2. **Custom plugin rules**: If you’ve written an in-house ESLint plugin (common in large orgs), you can’t just port it. Biome’s custom rule API requires writing Rust code and compiling a native plugin. This is a significant barrier for most teams.
 
-### When to Switch to Biome
+3. **Prettier integration**: Biome includes a formatter that is largely compatible with Prettier’s output, but not 100% identical. If you have a large codebase formatted with Prettier, you’ll see a one-time diff when you switch. Biome provides a `--write` flag to auto-format, but that initial commit can be noisy.
 
-You should consider Biome if:
-- You are starting a **new project** and have no legacy config.
-- Your team is frustrated with ESLint's speed in CI.
-- You want to consolidate your formatter and linter into one tool.
-- Your codebase relies mostly on standard rules (no-unused-vars, no-debugger, etc.) rather than deep type analysis.
+What you gain is equally clear:
 
-Biome's formatter is also a major draw. It is nearly identical to Prettier in output, meaning you can replace two dependencies with one.
+- **Unified tooling**: Biome replaces ESLint, Prettier, and (partially) `lint-staged`. One binary, one config file, one execution path.
+- **Editor responsiveness**: The VS Code extension for Biome updates diagnostics in near real-time, even on very large files.
+- **Simplified CI**: No more npm install of 200+ transitive dependencies required just for linting. Biome is a single binary that installs in under a second.
 
-## The Verdict: A Tale of Two Use Cases
+## The Verdict: Not a Question of "Better," but of "Fit"
 
-The data is clear: Biome is dramatically faster and offers a superior developer experience for standard projects. ESLint remains the more powerful tool for complex, type-heavy codebases.
+The decision between ESLint and Biome ultimately comes down to project complexity and team tolerance for configuration overhead.
 
-The future, however, points toward Biome. The team is actively working on adding type-aware rules, and the Rust ecosystem is investing heavily in JavaScript parsing (via tools like Oxc). Within 12-18 months, the performance gap may be accompanied by a feature parity that makes ESLint obsolete for most teams.
+**Choose ESLint if:**
+- You rely on type-aware linting rules for TypeScript correctness.
+- You use framework-specific plugins (Next.js, Vue, Angular, Svelte) that have no Biome equivalent.
+- You maintain a custom plugin or need to enforce org-specific patterns.
+- Your codebase already has a mature, battle-tested ESLint setup and linting speed is not a bottleneck.
 
-**The takeaway:** If you are starting a new project or managing a mid-sized codebase that values speed, switch to Biome today. If you are maintaining a sprawling enterprise application with deep TypeScript magic, hold steady with ESLint—but keep an eye on Biome's roadmap. The JavaScript tooling war is not over, but the momentum has definitively shifted.
+**Choose Biome if:**
+- You’re starting a new project and want a zero-config setup that "just works."
+- You’re tired of the ESLint + Prettier + plugins configuration sprawl.
+- Your lint runs are slow enough to disrupt your workflow (e.g., >10 seconds on pre-commit).
+- You’re working on a standard TypeScript/React project that doesn’t need exotic rules.
+
+One pragmatic path is a hybrid approach: keep ESLint for CI and pre-commit hooks where type-aware rules matter, but use Biome’s formatter and fast linting in your editor for immediate feedback. This gives you the best of both worlds, though it does mean maintaining two configs.
+
+The JavaScript ecosystem is trending toward speed and simplicity. Biome’s momentum is real—it’s already adopted by companies like Vercel and is gaining traction in the open-source community. But ESLint’s plugin ecosystem is a moat that won’t disappear overnight. The smart move is to evaluate your own pain points honestly. If linting speed is causing friction, Biome is worth a serious trial. If you need deep type safety and framework-specific rules, ESLint remains the industry standard for good reason.
