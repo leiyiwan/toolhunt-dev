@@ -1,6 +1,6 @@
 ---
 title: "Best Free CI/CD Tools for Solo Developers: GitHub Actions vs GitLab CI vs CircleCI"
-date: 2026-09-29T10:03:02+08:00
+date: 2026-09-30T18:03:43+08:00
 draft: false
 tags:
 
@@ -8,108 +8,68 @@ tags:
 
 # Best Free CI/CD Tools for Solo Developers: GitHub Actions vs GitLab CI vs CircleCI
 
-A solo developer shipping a side project on nights and weekends has a different set of needs than a platform team at a Fortune 500. You don't have a dedicated DevOps engineer. You don't want to babysit runners. And you definitely don't want a surprise invoice because a misconfigured workflow burned through 40,000 build minutes.
+A solo developer pushing code at 11 p.m. does not want to think about build servers. Yet continuous integration and continuous delivery (CI/CD) is exactly what keeps a one-person project from turning into a pile of untested, undeployable code. The good news: all three major platforms offer genuinely usable free tiers. The catch is that "free" means something different on each one, and the limits are easy to hit once you add tests, containers, and scheduled jobs.
 
-The good news: all three major CI/CD platforms offer genuinely usable free tiers. The bad news: they're structured so differently that picking the wrong one can cost you hours of rework later. Here's how GitHub Actions, GitLab CI, and CircleCI actually compare when you're a team of one.
+Here's how GitHub Actions, GitLab CI, and CircleCI actually compare for a team of one.
 
 ## The Free Tiers at a Glance
 
-| Platform | Free compute | Storage | Key catch |
+| | GitHub Actions | GitLab CI | CircleCI |
 |---|---|---|---|
-| GitHub Actions | 2,000 min/month (Free plan) | 500 MB packages | Minutes multiplier varies by OS |
-| GitLab CI | 400 compute min/month | 5 GB storage | Requires credit card verification |
-| CircleCI | 6,000 build credits/month (~equivalent to a few hundred minutes) | 1 GB | Credit system is hard to predict |
+| Free tier | 2,000 minutes/month (Free plan) | 400 compute minutes/month | 6,000 build credits/month (~ equivalent to 30,000 credits on the free plan) |
+| Linux runner rate | 1x multiplier | 1x multiplier | 10 credits/minute for small Docker executor |
+| Storage | 500 MB packages, 10 GB cache per repo | 5 GB storage | Varies by plan |
+| Private repos | Included in minutes | Included in minutes | Included in credits |
+| Public repos | Unlimited standard runners | Requires paid minutes beyond 400 | 30,000 credits on free plan |
 
-Numbers change, so verify against each vendor's current pricing page before committing. But the structural differences matter more than the exact figures.
+A few notes on that table. GitHub's 2,000 minutes apply to private repositories; standard GitHub-hosted runners are free and unlimited for public repositories. GitLab's Free tier includes 400 compute minutes per month, and public open source projects can request additional minutes through the GitLab Open Source Program. CircleCI's free plan historically advertised 6,000 build credits per month, with small Docker executors consuming 10 credits per minute — which works out to roughly 600 minutes, not 6,000. CircleCI has revised its credit structure over time, so check the current pricing page before you plan around a number.
+
+The practical takeaway: GitHub gives you the most raw minutes, GitLab gives you the tightest but most predictable budget, and CircleCI's credit system is the most confusing to reason about until you've watched a few builds burn through it.
 
 ## GitHub Actions: The Default Choice
 
-If your code already lives on GitHub, Actions is the path of least resistance. There's no separate account, no OAuth dance, no second dashboard. You drop a YAML file into `.github/workflows/` and you're running CI.
+If your code already lives on GitHub, Actions is the path of least resistance. There is no separate account, no separate billing relationship, and no separate UI. You add a YAML file under `.github/workflows/` and you're running.
 
-The ecosystem is the real selling point. The GitHub Marketplace has thousands of prebuilt actions, which means most common tasks—deploying to Vercel, caching dependencies, posting to Slack—are a few lines of YAML rather than a shell script you have to debug at 1 a.m.
+The real strength is the marketplace. Need to deploy to Fly.io, run Playwright, publish to npm, or post a Slack message? There's almost certainly an action for it. For a solo developer, that ecosystem replaces hours of shell scripting.
 
-**Where it shines for solo devs:**
-- Zero setup friction if you're already on GitHub
-- Massive community, so answers to problems are one search away
-- Matrix builds let you test across Node 18, 20, and 22 without duplicating config
-- Generous free minutes for public repos (unlimited on public repositories)
+The weaknesses show up at scale. Workflow syntax is verbose, and debugging a failed matrix build can feel like reading tea leaves. Self-hosted runners are free in terms of minutes but become your problem to maintain. And once you cross 2,000 minutes on a private repo, you're paying per-minute overage rates.
 
-**Where it stumbles:**
-- The 2,000 free minutes on private repos get consumed faster than you'd expect. Linux runners count 1:1, but Windows and macOS runners multiply your usage by 2x and 10x respectively. A macOS build that takes 10 minutes eats 100 minutes of your quota.
-- Workflow YAML can get verbose. Complex pipelines often turn into a wall of `uses:` and `with:` blocks.
-- Debugging failed runs is decent but not great—logs are searchable, but re-running with SSH access requires a third-party action.
+For most solo projects — a SaaS side project, a portfolio site, a small API — GitHub Actions is the sane default. It's good enough that "good enough" stops being a criticism.
 
-For most solo developers on GitHub, Actions is the pragmatic default. The question is whether "default" is the same as "best."
+## GitLab CI: Powerful, Predictable, Slightly Opaque
 
-## GitLab CI: Powerful but Opinionated
+GitLab CI is the most capable of the three out of the box. Pipelines, environments, review apps, container registry, and security scanning all live in one platform. If you want a single tool that handles source control, CI, and deployment, GitLab is the most complete package.
 
-GitLab CI is the most technically capable of the three, and it's also the one most likely to make you read documentation before you can do anything.
+The free tier, though, is the tightest. Four hundred compute minutes per month sounds like a lot until you run a Docker build on every push. A single container-heavy pipeline can eat 10–15 minutes, which means roughly 25–40 pipelines per month. That's fine for a weekend project and painful for anything active.
 
-The pipeline model is built around stages and jobs defined in `.gitlab-ci.yml`. It's more explicit than GitHub Actions—you declare stages, jobs run within them, and dependencies are handled through `needs:` and `artifacts:`. For someone who wants fine-grained control over parallelization and caching, this is a feature. For someone who just wants to run tests, it's overhead.
+GitLab's advantage is transparency. The pipeline configuration is a single `.gitlab-ci.yml`, the stages are explicit, and the `rules` and `needs` keywords give you fine-grained control over what runs when. There's no marketplace abstraction layer — you write the commands, you know what's happening.
 
-**Strengths:**
-- The most flexible caching and artifact system of the three
-- Built-in container registry, so you can push images without a separate service
-- Review apps and environments are first-class, not bolted on
-- Auto DevOps can generate a working pipeline for standard stacks with almost no config
+The tradeoff is that GitLab CI assumes you're comfortable with YAML and CI concepts. There's less hand-holding than GitHub Actions, and the documentation, while thorough, is written for people who already know what they're looking for.
 
-**Weaknesses:**
-- The free tier dropped to 400 compute minutes per month, which is tight. A moderately active side project can burn through that in a week.
-- New accounts need credit card verification to access shared runners, even on the free tier. That's a friction point if you're just kicking the tires.
-- Self-hosting GitLab to avoid the minute limits means maintaining a server. That's a real cost in time.
+## CircleCI: Fast, Flexible, Credit-Hungry
 
-GitLab CI makes the most sense if you're already using GitLab for source control, or if you need the container registry and review apps without stitching together three services.
+CircleCI has the best raw performance of the three. Its caching, parallelism, and Docker layer caching are genuinely excellent, and the `circleci config` CLI lets you validate configuration locally before pushing. For projects with slow test suites, that speed can matter more than anything else.
 
-## CircleCI: Fast, Flexible, and Slightly Opaque
+The problem is the pricing model. Credits are consumed at different rates depending on executor type and resource class, and the arithmetic isn't obvious. A small Docker executor consumes 10 credits per minute; larger machine types consume more. The free plan's 30,000 credits sound generous until you realize a 10-minute build on a small executor costs 100 credits — 300 builds per month if nothing else runs.
 
-CircleCI has been around since 2011 and has a reputation for speed. Its config format (`.circleci/config.yml`) is arguably the most readable of the three, with a clean orbs system that packages reusable configuration.
+CircleCI also has the steepest learning curve. The configuration is powerful but idiosyncratic, and the orbs system, while useful, adds another layer of abstraction. For a solo developer who wants to ship, not configure, it's often more tool than necessary.
 
-The free tier gives you 6,000 build credits per month. Here's the problem: credits aren't minutes. A Linux Docker executor costs 10 credits per minute, so 6,000 credits equals roughly 600 minutes. macOS executors cost far more. The conversion isn't obvious, and it's easy to lose track of where you stand.
+That said, if you're running a project where build speed is the bottleneck — a large monorepo, a heavy test suite, a complex deployment — CircleCI's performance can justify the friction.
 
-**What works well:**
-- Orbs dramatically reduce boilerplate for common integrations
-- Docker layer caching is excellent, which speeds up builds noticeably
-- The web UI for debugging is the best of the three—you can re-run from a failed step, SSH into a container, and inspect the environment
-- Parallelism features are available even on lower tiers
+## Which One Should You Actually Use?
 
-**What doesn't:**
-- The credit system makes cost forecasting harder than it needs to be
-- Fewer prebuilt integrations than GitHub Actions
-- If your code is on GitHub, you're maintaining a second platform for no obvious benefit unless you specifically need CircleCI's speed
+The honest answer depends on three questions:
 
-CircleCI is a strong choice if you have a compute-heavy pipeline (large test suites, complex Docker builds) and you've measured that the speed advantage matters. For a simple Node or Python project, the extra platform overhead probably isn't worth it.
+**Where does your code live?** If it's on GitHub, use GitHub Actions. The integration alone saves you time, and the free minutes are the most generous. If it's on GitLab, use GitLab CI — the tight minutes are offset by not needing a second platform.
 
-## How to Choose
+**How heavy is your pipeline?** Light pipelines (lint, test, deploy) fit comfortably in any free tier. Heavy pipelines (Docker builds, browser tests, multi-stage deployments) will burn through GitLab's 400 minutes fastest and CircleCI's credits unpredictably.
 
-The decision usually comes down to two questions: where does your code live, and what does your pipeline actually do?
+**How much do you value speed versus simplicity?** GitHub Actions is the simplest. GitLab CI is the most transparent. CircleCI is the fastest but the most expensive to reason about.
 
-**Pick GitHub Actions if:**
-- Your code is on GitHub
-- Your builds are under 10 minutes on Linux
-- You want the largest ecosystem of prebuilt actions
-- You value not having another account to manage
-
-**Pick GitLab CI if:**
-- You're already on GitLab
-- You need a container registry and review apps in one place
-- You want the most control over pipeline structure
-- You're comfortable self-hosting if you outgrow the free tier
-
-**Pick CircleCI if:**
-- Your builds are genuinely slow and caching matters
-- You want the best debugging experience
-- You're willing to trade some cost predictability for speed
-
-## A Practical Note on Free Tier Math
-
-Free tier limits are almost always more generous in marketing than in practice. The 2,000 GitHub Actions minutes sound like a lot until you factor in a macOS build, a scheduled nightly job, and a matrix that runs your test suite across four Node versions. Suddenly you're at 1,800 minutes by mid-month.
-
-Two habits help: cache aggressively (dependencies, Docker layers, build artifacts) and avoid running CI on every push to every branch. Most solo projects only need CI on pull requests and the main branch.
+For most solo developers in 2024, GitHub Actions wins on default. It's not the most powerful or the fastest, but it's the one you're least likely to abandon after a week of fighting configuration.
 
 ## The Bottom Line
 
-For most solo developers, GitHub Actions is the right default—not because it's the most powerful, but because it removes the most friction. You're already on GitHub, the ecosystem is enormous, and 2,000 minutes covers a surprising amount of work if you're not running macOS builds on every commit.
+All three platforms offer free tiers that are genuinely usable for solo work. GitHub Actions gives you the most minutes and the least friction. GitLab CI gives you the most complete platform and the tightest budget. CircleCI gives you the best performance and the most confusing pricing.
 
-GitLab CI is the better choice if you want an all-in-one platform and don't mind a steeper learning curve. CircleCI earns its keep when build speed is the bottleneck and you're willing to manage the credit math.
-
-None of these tools will make or break a side project. Pick one, get your tests running automatically, and spend your energy on the product instead of the pipeline.
+Pick the one that matches where your code already lives, keep your pipelines lean, and don't optimize for a scale you haven't reached yet. The best CI/CD tool for a solo developer is the one that runs without you thinking about it.
