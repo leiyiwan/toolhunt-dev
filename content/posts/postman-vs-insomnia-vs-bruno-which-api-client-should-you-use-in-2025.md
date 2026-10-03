@@ -1,86 +1,93 @@
 ---
-title: "Postman vs Insomnia vs Bruno: Which API Client Should You Use in 2025"
-date: 2026-10-03T10:04:42+08:00
+title: "Postman vs Insomnia vs Bruno: Which API Client Should You Use in 2025?"
+date: 2026-10-03T14:04:50+08:00
 draft: false
 tags:
 
 ---
 
-## Postman vs Insomnia vs Bruno: Which API Client Should You Use in 2025
+# Postman vs Insomnia vs Bruno: Which API Client Should You Use in 2025?
 
-Every developer who has ever poked at an HTTP endpoint has faced the same decision: which API client earns a permanent spot in your dock? For years the answer was almost reflexive—Postman, unless you had strong opinions. Then Insomnia matured into a genuine alternative, and in 2023 a scrappy open-source challenger called Bruno arrived with a promise that resonated with a lot of frustrated teams: your API collections, stored as plain files in your Git repo, not locked inside someone else's cloud.
+In 2023, Postman disabled the ability to sync collections with teammates on its free tier — a move that pushed thousands of developers to look at alternatives for the first time in years. Insomnia had already been acquired by Kong in 2019 and was tightening its own cloud features. Then Bruno arrived with a simple pitch: an API client that stores everything as plain files on your machine, no account required.
 
-By 2025, all three tools are viable, and the "right" choice depends less on raw features than on how your team works. Here's how they actually compare.
+Three years later, all three tools are still standing, but they've diverged in ways that matter. Here's how they compare on the things that actually affect your daily work.
 
-## The Quick Version
+## The quick version
 
-- **Postman** is the most feature-complete platform, with the deepest collaboration, testing, and documentation tooling—and the heaviest footprint, both in resources and in vendor dependence.
-- **Insomnia** sits in the middle: a cleaner, lighter client with strong multi-protocol support (REST, GraphQL, gRPC, WebSockets) and a design-first workflow, now under Kong's stewardship.
-- **Bruno** is the Git-native, offline-first upstart. Collections live as `.bru` files on your filesystem. No account required, no cloud sync unless you opt in.
+- **Postman** remains the most feature-complete option, with the largest ecosystem. It's also the heaviest and the most cloud-dependent.
+- **Insomnia** offers a cleaner interface and a strong balance between local and cloud workflows, though Kong's commercial direction has frustrated some longtime users.
+- **Bruno** is open source, fully offline-first, and stores collections as files you can commit to Git. It's lighter on features but growing fast.
 
-## Postman: The Incumbent With the Deepest Bench
+## Postman: the incumbent with the deepest feature set
 
-Postman's advantage in 2025 is breadth. It handles REST, GraphQL, gRPC, WebSockets, and SOAP, and wraps them in tooling that goes well beyond sending requests:
+Postman started in 2012 as a Chrome extension and grew into something closer to a platform than a client. As of 2024, the company reports more than 35 million registered developers, and its tooling spans API design, documentation, automated testing, mocking, and monitoring.
 
-- **Automated testing** with a JavaScript-based scripting sandbox and the `pm` API
-- **Collection Runner** and the newer Postman CLI for CI pipelines
-- **Mock servers** generated from your schemas or examples
-- **API documentation** that publishes from your collections
-- **Workspaces** with role-based access, comments, and version history
-- **The Postman API Network**, a public directory of thousands of API collections
+What you get:
 
-For teams that treat API work as a shared, governed asset—think platform teams at large enterprises—Postman's collaboration features are hard to match. The free tier is genuinely usable, though some collaboration and monitoring features push you toward paid plans (Team starts around $14–$19 per user per month depending on billing; Enterprise is custom-quoted).
+- **API design and documentation** built in, with generated docs you can publish
+- **Collection Runner** and Newman (the CLI) for CI integration
+- **Mock servers** for testing against endpoints that don't exist yet
+- **Workspaces** for team collaboration, with role-based access
+- **A vast public API network** for exploring third-party APIs
 
-The friction points are well documented. The desktop app is Electron-based and noticeably heavier than its rivals. Collections historically lived in Postman's cloud, which raised governance questions for teams in regulated industries. Postman has responded with a local-only "Scratch Pad" mode and improved data-residency options, but the cloud-first architecture remains the default mental model. And the 2023 decision to retire the Scratch Pad briefly—later reversed after backlash—left a lasting impression that your workflow depends on Postman's product roadmap.
+Where it gets annoying: the desktop app is an Electron build that can feel sluggish on older machines, and the free tier limits collaboration — you get a capped number of shared requests and collection runs per month. The 2023 decision to move Scratch Pad (offline storage) behind a login ruffled feathers, and while Postman later walked some of that back, the direction is clear: the cloud is the product.
 
-## Insomnia: The Pragmatic Middle Ground
+If your team already lives in Postman, switching costs are real. If you're starting fresh and don't need the platform features, the overhead may not be worth it.
 
-Insomnia, acquired by Kong in 2019, has settled into a clear identity: a fast, focused client that treats API design as a first-class activity. Its design-first editor lets you define an OpenAPI spec and generate requests from it, which appeals to teams that document before they build.
+## Insomnia: polished, but watch the licensing
 
-Multi-protocol support is arguably Insomnia's strongest suit. GraphQL queries get real autocomplete against your schema, gRPC requests get reflection-based method discovery, and WebSocket and SSE connections are handled natively—all in the same workspace.
+Insomnia's strength has always been its interface. Request building, environment variables, and GraphQL support feel more thoughtfully laid out than Postman's, and the app stays responsive under load. It supports REST, GraphQL, gRPC, and WebSockets in one client, which matters if you work across protocols.
 
-Where Insomnia stumbles is storage and sync. Collections live in a local database and sync through Insomnia's cloud (or Kong's Konnect platform on paid tiers). You *can* export to Git, but it's an export, not a native workflow. For developers who want their API definitions versioned alongside their code, that's a real gap.
+Key features:
 
-Pricing has also shifted over the years. Insomnia's free tier covers individual use well, but team collaboration, RBAC, and enterprise SSO require paid plans (roughly $12–$18 per user per month for team tiers). The 2023 introduction of mandatory account sign-in for cloud sync annoyed a segment of longtime users, though local-only usage remains possible.
+- **Design-first workflow** with OpenAPI editor integration
+- **Environment and variable management** that's genuinely pleasant to use
+- **Plugin ecosystem** for extending request behavior
+- **Kong integration** if you're already in the Kong ecosystem
 
-## Bruno: The Git-Native Challenger
+The catch is governance. Insomnia's free tier requires an account for cloud sync, and Kong has been steadily pushing paid tiers. In 2023, Insomnia moved to a model where some previously free features required a subscription, prompting a wave of complaints. The company also changed its storage format in ways that broke some users' workflows.
 
-Bruno launched in 2023 and hit a nerve. Its core pitch is almost aggressively simple: collections are folders of plain-text files using Bruno's own `.bru` markup format, stored wherever you want—typically right inside your project repository.
+Insomnia is still a solid choice, especially for individual developers who want a clean UI and don't mind creating an account. But if license stability matters to you — say, for a team that needs to audit its tooling — read the current terms carefully before committing.
 
-That single design decision cascades into everything else:
+## Bruno: the offline-first newcomer
 
-- **No account, no cloud.** Bruno is offline by default. Sync is something you do with Git, like you do with code.
-- **Git-friendly diffs.** Because requests are individual text files, a pull request that changes an endpoint shows up as a readable diff, not an opaque JSON blob.
-- **Lightweight.** The app is built on a leaner stack than Electron (it uses a Rust-based shell), and it starts fast.
-- **Open source under the MIT license**, with a paid "Bruno Plus" tier for teams that want a hosted collaboration layer.
+Bruno launched publicly in 2023 and has since crossed 30,000 GitHub stars. Its core differentiator is architectural, not cosmetic: collections are stored as `.bru` plain-text files in a folder on your filesystem. No database, no cloud sync by default, no account.
 
-Bruno supports REST, GraphQL, and gRPC, plus scripting via a JavaScript sandbox and a CLI (`bru`) for CI. It also imports Postman and Insomnia collections, which lowers the switching cost considerably.
+That single decision cascades into real benefits:
 
-What Bruno lacks is maturity at scale. Its ecosystem of plugins and integrations is small compared to Postman's. Documentation generation is basic. Enterprise governance features—audit logs, fine-grained RBAC, SSO—are thinner or newer. If your organization needs a centrally managed API catalog with compliance controls, Bruno isn't there yet.
+- **Git-native collaboration.** Your API collection lives alongside your code. Branch it, diff it, review it in a pull request.
+- **Works fully offline.** No login, no telemetry by default, no network calls unless you make them.
+- **Fast.** The app is built on a lighter stack than Postman and starts quickly.
+- **Open source.** The core client is MIT-licensed (some enterprise features are paid).
 
-## Head-to-Head Comparison
+Bruno supports REST and GraphQL, scripting via JavaScript, environment variables, and a CLI (`bru`) for CI pipelines. It also has an import tool that handles Postman and Insomnia collections reasonably well, though complex scripts don't always translate cleanly.
 
-| | Postman | Insomnia | Bruno |
-|---|---|---|---|
-| **Storage model** | Cloud-first, local option | Local DB + cloud sync | Plain files on disk |
-| **Git workflow** | Export/import | Export/import | Native |
-| **Protocols** | REST, GraphQL, gRPC, WS, SOAP | REST, GraphQL, gRPC, WS, SSE | REST, GraphQL, gRPC |
-| **Mock servers** | Yes | Limited | No |
-| **CI/CLI** | Postman CLI (Newman heritage) | Inso CLI | Bruno CLI |
-| **Open source** | Partially (some components) | Partially | Yes (MIT) |
-| **Free tier** | Generous | Generous | Fully functional |
-| **Team pricing** | ~$14–$19/user/mo | ~$12–$18/user/mo | Plus tier, lower cost |
+What it lacks: gRPC and WebSocket support are limited or absent depending on the version, the plugin ecosystem is thin, and the UI — while clean — is less polished than Insomnia's. Documentation has improved but still trails the big two.
 
-## How to Choose
+For solo developers, small teams, and anyone who's tired of syncing API credentials through a third-party cloud, Bruno is the most interesting option on this list.
 
-**Pick Postman if** you need the broadest protocol coverage, mature testing and mocking, polished documentation publishing, or you're coordinating API work across a large, non-uniform organization. The collaboration features justify the weight for many enterprise teams.
+## How to choose
 
-**Pick Insomnia if** you work heavily with GraphQL or gRPC, like a design-first OpenAPI workflow, and want something lighter than Postman without giving up a polished GUI. It's a strong fit for individual developers and small product teams.
+| If you... | Pick |
+|---|---|
+| Need API documentation, mocking, and monitoring in one platform | Postman |
+| Want the best UI and work across REST, GraphQL, gRPC, and WebSockets | Insomnia |
+| Want Git-friendly, offline-first collections with no account | Bruno |
+| Work on a large team with existing Postman tooling | Postman |
+| Care about open source and data ownership | Bruno |
 
-**Pick Bruno if** your team lives in Git, values offline-first tools, dislikes per-seat SaaS pricing, or works in an environment where sending API definitions to a third-party cloud is a non-starter. It's also a natural choice for open-source projects, where contributors can clone a repo and immediately have the full collection.
+A few practical notes:
 
-A practical note: these tools aren't mutually exclusive. Bruno and Insomnia both import Postman collections, and plenty of developers keep Postman installed for one-off exploration while running their project's canonical collection in Bruno. The switching cost between them is low enough that the real question isn't "which is best" but "which matches how my team already shares work."
+**On pricing:** Postman's paid plans start around $14/user/month (billed annually) for the Basic tier, with higher tiers for advanced collaboration. Insomnia's paid plans start around $12/user/month. Bruno's core is free; a paid tier exists for team features.
 
-## The Takeaway
+**On migration:** All three can import from each other to varying degrees. Test with a small collection first — environment variables and pre-request scripts are where imports usually break.
 
-In 2025, the API client market has finally fractured in a healthy way. Postman remains the default for teams that want a full platform and don't mind the cloud dependency. Insomnia is the balanced choice for multi-protocol and design-first workflows. Bruno is the right answer for Git-centric, offline-first teams that want their API definitions treated like code. Match the tool to your collaboration model, not to a feature checklist—that's the decision that will actually stick.
+**On security:** Postman and Insomnia store credentials in their own vaults; Bruno stores them in local files, which means you need to be careful about what you commit. Bruno supports `.env` files and secret variables to mitigate this, but the responsibility shifts to you.
+
+## The bottom line
+
+There's no single winner in 2025. Postman is still the safe enterprise default, Insomnia remains the best-designed client if you accept its licensing direction, and Bruno is the right answer for developers who want their API collections treated like code.
+
+The honest test: think about where your collections live today and who can access them. If that answer makes you uncomfortable, Bruno's file-based model is worth an afternoon of experimentation. If your team depends on shared documentation and mock servers, Postman's ecosystem is hard to replace. And if you just want a fast, pleasant client for personal projects, Insomnia still earns its place.
+
+Try two of them side by side for a week. The differences that matter to you will surface quickly — and they're rarely the ones the marketing pages emphasize.
