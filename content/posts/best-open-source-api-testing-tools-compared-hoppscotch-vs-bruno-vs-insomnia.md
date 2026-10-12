@@ -1,6 +1,6 @@
 ---
 title: "Best Open Source API Testing Tools Compared: Hoppscotch vs Bruno vs Insomnia"
-date: 2026-10-04T10:05:06+08:00
+date: 2026-10-12T14:04:01+08:00
 draft: false
 tags:
 
@@ -8,91 +8,69 @@ tags:
 
 ## Best Open Source API Testing Tools Compared: Hoppscotch vs Bruno vs Insomnia
 
-Postman's 2023 decision to remove its Scratch Pad and require cloud sign-in for basic collection work sent a visible ripple through developer communities. Within days, GitHub stars for alternative API clients spiked, and "Postman alternative" became one of the more searched developer queries of that year. The episode pushed a practical question to the front: if you want an API client that stores your requests locally, runs without an account, and doesn't phone home, what are your actual options?
+Postman's 2023 decision to remove the Scratch Pad and push users toward cloud-synced accounts triggered one of the loudest migrations the developer tooling world has seen in years. Within weeks, GitHub stars for alternatives spiked, and "Postman alternative" became a perennial search term. Three names keep surfacing in that conversation: Hoppscotch, Bruno, and Insomnia.
 
-Three names dominate that conversation: Hoppscotch, Bruno, and Insomnia. They are often lumped together as "open source Postman alternatives," but they differ substantially in architecture, licensing, and how they handle your data. Here's how they compare.
+They are not interchangeable. One runs in your browser, one stores collections as plain files in your Git repo, and one has changed ownership and licensing in ways that matter. Here's how they actually compare on architecture, features, licensing, and day-to-day workflow.
 
-## Quick Comparison at a Glance
+## The Contenders at a Glance
 
-| Feature | Hoppscotch | Bruno | Insomnia |
+| | Hoppscotch | Bruno | Insomnia |
 |---|---|---|---|
-| Primary interface | Browser (self-hostable) | Desktop app | Desktop app |
-| License | MIT | MIT | MIT (with commercial editions) |
-| Local-first storage | No (browser storage or self-hosted DB) | Yes (plain-text files on disk) | Yes (local vault; cloud optional) |
-| Git-friendly collections | Partial | Yes, by design | Limited |
-| Account required | No | No | No for core use |
-| Best for | Quick browser-based testing | Teams wanting version-controlled collections | Broad protocol support and plugin ecosystem |
+| **Interface** | Browser-based (PWA), desktop app available | Desktop app (Electron) | Desktop app (Electron) |
+| **Collection storage** | Cloud (self-hostable) or local | Plain-text files on disk (`.bru`) | Local vault or cloud sync |
+| **License** | MIT | MIT | MIT (core), with paid tiers |
+| **Git-friendly** | Limited | Excellent | Limited |
+| **CLI/CI support** | CLI available | `bru` CLI | Inso CLI |
+| **Best for** | Quick requests, teams wanting a web UI | Git-centric teams, code review workflows | Users wanting a polished GUI with broad protocol support |
 
 ## Hoppscotch: The Browser-First Option
 
-Hoppscotch started as a lightweight web app (originally called Postwoman) and has grown into a full API development platform. Its defining trait is that you can open a URL, type an endpoint, and send a request in seconds—no install, no sign-in.
+Hoppscotch started as a lightweight web app (originally called Postwoman) and still leads with that identity. Open `hoppscotch.io`, type a URL, hit send. No install, no account required for basic use. That zero-friction entry point is why it has attracted a large casual user base alongside its 60,000+ GitHub stars.
 
-The project is MIT-licensed and can be self-hosted, which matters for teams that want the convenience of a web client without sending traffic through a third party. A self-hosted instance gives you team workspaces, shared collections, and environment management on your own infrastructure.
+The tool covers the essentials well: REST, GraphQL, WebSocket, Server-Sent Events, MQTT, and Socket.IO. It handles environment variables, pre-request scripts, and test assertions. The desktop app exists for people who need to bypass browser CORS restrictions or work offline.
 
-**Strengths:**
-- Zero-friction start; works on any machine with a browser
-- Supports REST, GraphQL, WebSocket, SSE, MQTT, and Socket.IO
-- Self-hostable under a permissive license
-- Clean, fast UI that handles simple requests well
+Where Hoppscotch gets interesting is self-hosting. Because the whole stack is MIT-licensed and open source, teams can run their own instance and keep request data on their own infrastructure—a genuine advantage for organizations with data residency requirements. The tradeoff is operational overhead: you're now maintaining a service.
 
-**Trade-offs:**
-- The browser model has inherent limits. Requests that need custom certificates, certain auth flows, or direct access to local network resources can be awkward compared to a native app.
-- Collections live in browser storage or a server database, not as files you can commit. That makes Git-based workflows harder than with a file-based tool.
-- Heavy reliance on the hosted service if you don't self-host.
+The browser-first design also has limits. Complex scripting feels cramped compared to desktop rivals, and the Git story is weak. Collections live in Hoppscotch's workspace model rather than as files you can diff and review in a pull request.
 
-Hoppscotch is a strong fit when you need to test an endpoint right now, or when you want a shared web-based workspace your team can self-host.
+## Bruno: Collections as Code
 
-## Bruno: Collections as Files
+Bruno made its name with a single architectural decision: collections are stored as plain-text files in a folder on your filesystem, using Bruno's own `.bru` format. Point Bruno at a folder inside your Git repository, and your API collections become versioned artifacts like any other code.
 
-Bruno takes the opposite architectural bet. It's a desktop app that stores every request as a plain-text file (`.bru` format) inside a folder on your machine. A collection is just a directory. You can open it in any editor, diff it, and commit it to Git.
+This sounds minor. It isn't. It means an API change can be reviewed in a pull request, a broken request can be caught in CI, and a new hire can clone the repo and immediately have the team's full collection. There's no export/import dance, no proprietary JSON blob, no cloud account required. Bruno's tagline—"offline-only"—reflects a deliberate stance against mandatory sync.
 
-This is the feature that has driven much of Bruno's adoption. API collections become part of the codebase rather than living in a vendor's cloud. Reviewing a change to an endpoint definition becomes a normal pull request.
+Feature-wise, Bruno covers REST and GraphQL, environments, scripting (JavaScript), assertions, and a collection runner. The `bru` CLI lets you execute collections in pipelines, which is the piece most GUI-first tools handle awkwardly. Secrets management and a secrets manager integration exist for teams that need them.
 
-**Strengths:**
-- Offline by default; no account, no sync, no telemetry required
-- Git-native collections that diff cleanly
-- MIT-licensed with an active community
-- Supports REST, GraphQL, and gRPC
-- Scripting via JavaScript for pre-request and test logic
+The costs are real too. Bruno's ecosystem is younger, so you'll find fewer plugins and community templates. The UI is functional rather than beautiful. And if your team genuinely prefers a hosted, always-synced workspace, Bruno's file-based model will feel like extra work rather than less.
 
-**Trade-offs:**
-- Desktop-only. There's no browser client, so testing from a locked-down machine is harder.
-- The ecosystem is younger than Postman's or Insomnia's, so fewer plugins and integrations exist.
-- Collaboration happens through Git rather than built-in real-time sharing, which suits engineering teams but may not suit non-technical stakeholders.
+## Insomnia: Polished, But Read the Fine Print
 
-If your team already treats infrastructure as code, Bruno's model will feel natural. If your API collection is something a product manager needs to click through, it may feel like extra ceremony.
+Insomnia (originally by Kong) has the most mature interface of the three. It supports REST, GraphQL, gRPC, WebSocket, and GraphQL subscriptions, with a design-first workflow for spec-driven development. The Inso CLI handles CI integration, and the plugin ecosystem is the largest here.
 
-## Insomnia: Mature, Broad, and Slightly Complicated
+The complication is licensing and ownership history. Insomnia's core remains MIT-licensed, but the company has shifted its model over time—introducing paid tiers, requiring accounts for some features, and changing storage defaults. In 2023, Kong announced layoffs and Insomnia's future direction became a topic of community speculation. The project was later acquired, and users have periodically raised concerns about telemetry and mandatory sign-ins.
 
-Insomnia has the longest history of the three. It's a polished desktop client with broad protocol support—REST, GraphQL, gRPC, WebSocket, and more—plus a plugin system and environment variables that many teams rely on.
+None of this makes Insomnia unusable. It's still a capable, well-maintained tool with strong protocol coverage. But if you're choosing an open source tool specifically to avoid vendor lock-in and account requirements, Insomnia's trajectory is worth weighing carefully. The MIT core is genuine; the surrounding product decisions are less predictable than Bruno's or Hoppscotch's.
 
-The nuance is in licensing and packaging. Insomnia's core is open source under MIT, but Kong (which acquired the project in 2019) offers paid tiers and a cloud sync service. In 2023, the company also introduced account requirements for some functionality, which triggered backlash similar to Postman's. The team later adjusted course, but the episode is worth knowing if account-free operation is non-negotiable for you.
+## Feature Comparison: What Actually Matters
 
-**Strengths:**
-- The most mature feature set of the three
-- Excellent protocol coverage and plugin ecosystem
-- Local vault storage keeps secrets on your machine
-- Strong design tools for building requests interactively
+**Protocol support.** Insomnia wins on breadth (gRPC, GraphQL subscriptions). Hoppscotch covers real-time protocols well. Bruno focuses on REST and GraphQL—sufficient for most teams, limiting for gRPC-heavy shops.
 
-**Trade-offs:**
-- The open-core model means some capabilities sit behind paid plans
-- Historically more entangled with a commercial vendor than Bruno or Hoppscotch
-- Heavier application than the other two
+**Scripting and testing.** All three support JavaScript pre-request and test scripts. Insomnia's is the most mature; Bruno's is clean and adequate; Hoppscotch's works but feels constrained in the browser.
 
-Insomnia suits teams that want a full-featured client and are comfortable with a commercial vendor in the mix.
+**Environments and secrets.** All three handle environment variables. Bruno and Insomnia offer stronger secrets management; Hoppscotch relies on workspace-level variables unless self-hosted.
 
-## How to Choose
+**CI/CD.** Bruno's file-based model makes pipeline integration natural. Insomnia's Inso CLI is capable but requires exporting collections. Hoppscotch's CLI works but assumes connectivity to a workspace.
 
-The decision usually comes down to two questions: where should your collections live, and who needs to use them?
+**Collaboration.** Hoppscotch and Insomnia offer hosted team features. Bruno's collaboration model is Git itself—which some teams love and others find insufficient.
 
-**Pick Hoppscotch if** you want instant, install-free testing, or you want to self-host a shared web workspace. It's the easiest on-ramp and the best fit for quick, ad hoc requests.
+## Which Should You Pick?
 
-**Pick Bruno if** you want your API definitions to live in Git alongside your code, with no cloud dependency and no account. It's the clearest choice for engineering teams that value version control and offline operation.
+Choose **Hoppscotch** if you want instant access from any browser, value self-hosting for compliance reasons, or need a low-friction tool for ad-hoc testing across a team that doesn't want to install anything.
 
-**Pick Insomnia if** you need the broadest protocol and plugin support and don't mind an open-core model. It's the most capable out of the box, with the caveat that some features are commercial.
+Choose **Bruno** if your team lives in Git, reviews changes through pull requests, and wants API collections treated as first-class code. It's the strongest fit for engineering organizations that already have CI pipelines and code review culture.
 
-A practical note: none of these choices are permanent. Because Bruno stores collections as plain files, migration in and out is relatively painless. Hoppscotch and Insomnia both support importing common formats like OpenAPI and Postman collections. Many developers keep two installed—a browser tool for quick checks and a desktop client for real work.
+Choose **Insomnia** if you need the broadest protocol support, the most polished GUI, and don't mind the account and licensing complexities. It remains the most feature-complete option of the three.
 
-## The Bottom Line
+## The Takeaway
 
-The shift away from mandatory cloud accounts has produced three genuinely good options rather than one obvious winner. Hoppscotch wins on accessibility, Bruno wins on data ownership and Git workflows, and Insomnia wins on maturity and protocol breadth. If your priority is keeping API collections under your own control—and increasingly, for many teams, it is—Bruno's file-based approach is the most direct answer. If you just want to send a request in the next thirty seconds without installing anything, Hoppscotch is already waiting in your browser.
+The "best" tool here depends less on feature checklists than on where you want your API collections to live. Hoppscotch puts them in a workspace you can self-host, Bruno puts them in your repository as files, and Insomnia puts them in a polished app with a cloud component. If avoiding lock-in is your priority, Bruno's plain-file approach is the most durable bet; if convenience and protocol breadth matter more, Hoppscotch and Insomnia each make a reasonable case. Try all three against one real project before committing—the migration cost later is higher than the hour it takes now.
