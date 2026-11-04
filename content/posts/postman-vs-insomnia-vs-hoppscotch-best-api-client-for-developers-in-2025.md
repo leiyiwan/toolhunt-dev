@@ -1,6 +1,6 @@
 ---
 title: "Postman vs Insomnia vs Hoppscotch: Best API Client for Developers in 2025"
-date: 2026-11-03T14:02:21+08:00
+date: 2026-11-04T14:02:49+08:00
 draft: false
 tags:
 
@@ -8,77 +8,75 @@ tags:
 
 # Postman vs Insomnia vs Hoppscotch: Best API Client for Developers in 2025
 
-Every API client comparison starts the same way: Postman is the heavyweight, Insomnia is the challenger, Hoppscotch is the lightweight. That framing was accurate in 2021 and is only partly true now. Postman has spent the past two years trying to shed its reputation as a bloated collaboration platform, Insomnia changed hands and then changed its pricing model twice, and Hoppscotch grew from a browser-based hobby project into a tool with a desktop app, CLI, and self-hosting option.
+In 2024, Postman's public API network passed 40 million registered developers, Insomnia was acquired by Kong and folded into a broader API lifecycle platform, and Hoppscotch quietly crossed 60,000 GitHub stars with a browser-first model that needs no install. Three very different bets on what an API client should be.
 
-If you're choosing a tool for a team in 2025, the decision comes down to three questions: How much do you value a full platform versus a fast, focused client? How sensitive are you to per-seat pricing? And how much of your workflow needs to live outside a single developer's laptop?
+The choice matters more than it used to. An API client now sits at the center of your debugging loop, your test suite, your team's documentation, and sometimes your CI pipeline. Picking one is a multi-year commitment to a workflow. Here's how the three stack up in 2025, with the trade-offs spelled out rather than ranked into a single "winner."
 
-Here's how the three stack up on the things that actually affect daily work.
+## The three tools at a glance
 
-## The State of Play in 2025
+- **Postman** — The incumbent. Electron desktop app plus a full web client, with collections, environments, mock servers, monitors, a public API network, and an AI assistant. Free tier is generous for individuals; paid plans start around $14 per user per month (billed annually) and climb steeply for teams.
+- **Insomnia** — Now branded "Insomnia by Kong." A leaner desktop client with strong support for REST, GraphQL, gRPC, WebSockets, and SSE. Free tier covers core use; paid plans begin around $12 per user per month, with enterprise tiers tied to Kong's platform.
+- **Hoppscotch** — Open-source (MIT-licensed core), runs in the browser or as a desktop app, and can be self-hosted. Supports REST, GraphQL, WebSocket, SSE, MQTT, and Socket.IO. Free for individuals; cloud team plans are modest, and self-hosting is free if you bring the infrastructure.
 
-The API tooling market has consolidated around a few models. Postman is the platform play: it wants to own the entire API lifecycle, from design and mocking to testing, documentation, and monitoring. Insomnia, now owned by Kong, positions itself as a focused API client with strong support for multiple protocols. Hoppscotch is the open-source-first option, with a generous free tier and a self-hostable server.
+## Postman: the ecosystem play
 
-All three handle the basics competently: sending requests, organizing collections, managing environments, and inspecting responses. The differences show up in pricing, offline behavior, collaboration, and how much tooling you need to bolt on.
+Postman's advantage is breadth. If you need to design an API spec, generate a collection from it, spin up a mock server, run a monitor on a schedule, and publish docs to a public workspace, Postman does all of it without leaving the app. The scripting layer (pre-request and test scripts in JavaScript) is mature, and the `newman` CLI lets you run collections in CI.
 
-## Postman: The Platform, With Platform Costs
+The costs are real. The desktop app is heavy — Electron-based, and users regularly report it consuming several hundred megabytes of RAM with a large workspace open. The 2023 controversy over the scrapping of the Scratch Pad (later partially walked back) left a lasting trust question about how aggressively the company pushes users toward cloud accounts. And pricing scales in a way that surprises teams: what's cheap for three developers gets uncomfortable at thirty.
 
-Postman remains the default choice for most teams, and it's easy to see why. The feature set is broad: collections, environments, pre-request scripts, test scripts, mock servers, monitors, a public API network, and documentation generation. If your organization already uses Postman workspaces, switching costs are real.
+**Best for:** teams that want one tool for the full API lifecycle and are willing to pay for it; anyone who relies on the public API network for discovery.
 
-The free tier is usable for individuals, but it has tightened over time. Postman's paid plans are billed per user, and the jump from free to team tiers is steep for small teams. That pricing structure is the most common complaint in developer forums, and it's worth modeling before you commit a 10-person team.
+## Insomnia: focus over breadth
 
-Postman has also invested in the CLI, `newman`, for running collections in CI. That's a genuine advantage if you want API tests to run in your pipeline without adding another tool. The tradeoff is weight: the desktop app is resource-hungry, and the cloud-first design means some collaboration features depend on being signed in.
+Insomnia's pitch is that it does the core job — sending requests, organizing them into collections, managing environments — with less overhead. The interface is cleaner, the app feels lighter, and GraphQL support in particular is well-regarded, with schema introspection and autocomplete built in. The plugin system (though less active than it once was) lets you extend request handling.
 
-**Best for:** Teams that want one tool for design, testing, documentation, and monitoring, and are willing to pay for it.
+The Kong acquisition changed the calculus. Insomnia is increasingly positioned as an on-ramp to Kong's API gateway and governance products. For teams already in the Kong ecosystem, that's a feature. For everyone else, it means the roadmap is steered by priorities that may not match yours. The free tier also now requires an account for cloud sync features, and some users have chafed at the login prompts.
 
-## Insomnia: Focused, With a Pricing Caveat
+**Best for:** individual developers and small teams who want a fast, focused desktop client, especially with GraphQL-heavy work.
 
-Insomnia's pitch is simplicity. The interface is cleaner than Postman's, the learning curve is shorter, and it handles GraphQL, gRPC, WebSocket, and REST in one client. For developers who mostly send requests and don't need a full platform, Insomnia often feels faster to use.
+## Hoppscotch: open source and browser-first
 
-The history matters here. Insomnia was acquired by Kong in 2019. In 2023, the company introduced a paid-only model for some features and then walked parts of it back after significant community pushback, including a fork of the open-source codebase. The practical result in 2025 is a tool with a free tier, a paid tier, and a community that watches pricing changes closely. Before standardizing on Insomnia, check the current plan details rather than relying on older reviews.
+Hoppscotch started as a lightweight web alternative and has grown into a genuine contender. Because the core is open source and self-hostable, it appeals to teams with data-residency requirements or a principled preference for avoiding vendor lock-in. The browser-first model means zero install friction — paste a URL and send a request in seconds.
 
-Insomnia's strengths are real: a solid environment manager, good support for API specs like OpenAPI and GraphQL, and a UI that doesn't get in the way. Its collaboration features are less developed than Postman's, and its CI story relies on a separate CLI (`inso`). If your team mostly needs a fast client and already has testing covered elsewhere, Insomnia is a strong fit.
+The trade-offs are maturity and depth. Collection runners, CI integration, and enterprise features like SSO are less developed than Postman's. The self-hosted path requires you to run and maintain the stack, which is real work. And while the community is active, the ecosystem of tutorials, integrations, and third-party tooling is thinner. For straightforward REST and GraphQL testing, though, it covers the vast majority of daily needs — and the price is hard to argue with.
 
-**Best for:** Individual developers and small teams that want a clean, multi-protocol client and don't need a full platform.
+**Best for:** open-source-minded teams, cost-sensitive organizations, and anyone who wants self-hosting or browser-based access without an install.
 
-## Hoppscotch: Open Source and Lightweight
+## Feature comparison
 
-Hoppscotch started as a browser-based alternative and has grown into a legitimate option. It runs in the browser, has a desktop app, and offers a CLI for CI. The interface is fast, the free tier is generous, and the project is open source, which matters if your organization has data residency or self-hosting requirements.
-
-The self-hosted option is Hoppscotch's clearest differentiator. Teams that can't send API traffic through a third-party cloud, or that want to keep collections on internal infrastructure, can run their own Hoppscotch server. That's a capability neither Postman nor Insomnia offers in the same way.
-
-The tradeoffs are maturity and depth. Hoppscotch's collaboration and documentation features are simpler than Postman's, and its ecosystem of integrations is smaller. For straightforward request testing, it's excellent. For a large organization that needs granular workspace permissions and audit trails, it may feel thin. It's also worth checking the current feature split between the free and paid tiers, since the project has been commercializing.
-
-**Best for:** Developers who value speed and open source, and teams that need self-hosting.
-
-## Head-to-Head Comparison
-
-| Criterion | Postman | Insomnia | Hoppscotch |
+| Capability | Postman | Insomnia | Hoppscotch |
 |---|---|---|---|
-| Core request testing | Excellent | Excellent | Very good |
-| Multi-protocol (GraphQL, gRPC, WebSocket) | Yes | Yes | Yes |
-| Collaboration and workspaces | Strongest | Basic | Basic to moderate |
-| CI/CD CLI | Newman (mature) | Inso | Hoppscotch CLI |
-| Self-hosting | Limited | No | Yes |
-| Free tier | Usable, tightening | Usable | Generous |
-| Open source | No | Partly (with caveats) | Yes |
-| Resource footprint | Heavy | Moderate | Light |
+| REST / GraphQL / gRPC | Yes | Yes | Yes (gRPC in progress) |
+| WebSocket / SSE | Yes | Yes | Yes |
+| CLI for CI | Newman (mature) | inso CLI | Limited |
+| Mock servers | Yes | Limited | Limited |
+| Self-hosting | Enterprise only | No | Yes (free) |
+| Open source core | No | No | Yes (MIT) |
+| Free tier generosity | High | High | Very high |
+| Desktop app weight | Heavy | Moderate | Light (web) / moderate |
 
-The pattern is clear: Postman wins on breadth and collaboration, Insomnia on focused usability, Hoppscotch on openness and cost.
+Treat the table as directional — all three ship updates frequently, and details shift quarter to quarter.
 
-## How to Choose
+## Performance and resource use
 
-Start with your constraints, not the feature lists.
+If you work on a laptop with 16 GB of RAM and a dozen other apps open, this matters. Postman is the heaviest of the three; its feature set comes with a footprint. Insomnia sits in the middle. Hoppscotch in the browser is the lightest, though a browser tab with many open requests has its own costs, and the desktop build is a reasonable middle ground. None of these differences are dealbreakers, but "my API client is eating my battery" is a complaint you'll hear about Postman far more than the others.
 
-If you're a solo developer or on a small team, Hoppscotch or Insomnia will likely cover everything you need without a subscription. If you need API tests in CI, check which CLI fits your pipeline; Newman is the most mature, but the others are workable.
+## Pricing reality check
 
-If you're on a team of five or more that shares collections and documents APIs, Postman's collaboration features may justify the per-seat cost. Run the numbers for your actual headcount before assuming it's too expensive; the free tier covers more than people expect, and the paid tiers are priced per user, not per request.
+For a solo developer, all three are effectively free. The divergence starts at small-team scale. Postman's per-seat pricing adds up quickly once you include everyone who touches the API — including QA and support staff who may only need read access. Insomnia's pricing is comparable but increasingly bundled with Kong's platform. Hoppscotch's self-hosted option is the outlier: free software, your infrastructure, your maintenance burden. Run the math for your actual headcount before committing; the sticker price is only part of the story.
 
-If your organization has compliance or data-residency requirements, Hoppscotch's self-hosting is the deciding factor. No amount of features compensates for a tool you're not allowed to use.
+## Security and data handling
 
-One more consideration: don't standardize on a tool just because it's popular. The cost of migrating collections and scripts later is real, but so is the cost of paying for features your team never opens.
+All three store request history and environment variables, which can include API keys and tokens. Postman and Insomnia sync to their clouds by default (configurable). Hoppscotch's browser model means requests originate from your browser, which has implications for CORS and for where credentials live. For regulated industries, Hoppscotch's self-hosting is the clearest path to keeping data in-house; Postman offers enterprise self-hosting but at enterprise prices.
 
-## The Takeaway
+## The verdict
 
-There's no single best API client in 2025, and the honest answer depends on your team's size, budget, and infrastructure rules. Postman remains the most complete platform and the safest choice for large teams that need collaboration and CI built in. Insomnia is the better pick for developers who want a fast, clean client and don't need the platform layer. Hoppscotch is the right answer when open source, self-hosting, or cost control tops the list.
+There's no universal winner, and anyone who tells you otherwise is selling something.
 
-Pick the tool that matches your constraints, trial it with a real project for a week, and revisit the decision when your team's needs change. The market is competitive enough that switching later is inconvenient, not catastrophic.
+- **Choose Postman** if your team needs the full lifecycle — design, mock, test, monitor, document — in one place and the budget supports it.
+- **Choose Insomnia** if you want a fast, focused desktop client and either work heavily in GraphQL or already live in the Kong ecosystem.
+- **Choose Hoppscotch** if open source, self-hosting, or zero-install convenience are priorities, and your needs center on everyday request testing rather than enterprise governance.
+
+The pragmatic move for many teams is to standardize on one for shared collections and CI, while letting individuals use whichever client they prefer for ad-hoc debugging. Collections are portable enough that this doesn't create the chaos it once did.
+
+**The takeaway:** in 2025 the API client market has segmented by philosophy rather than feature checklist. Postman sells an ecosystem, Insomnia sells focus, and Hoppscotch sells openness. Match the tool to how your team actually works — and revisit the decision when your headcount or compliance requirements change, because that's when the pricing and data-handling differences stop being abstract.
