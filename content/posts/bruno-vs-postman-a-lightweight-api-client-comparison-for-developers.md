@@ -1,6 +1,6 @@
 ---
 title: "Bruno vs Postman: A Lightweight API Client Comparison for Developers"
-date: 2026-11-13T14:03:32+08:00
+date: 2026-11-26T18:02:36+08:00
 draft: false
 tags:
 
@@ -8,81 +8,80 @@ tags:
 
 # Bruno vs Postman: A Lightweight API Client Comparison for Developers
 
-Postman has been the default answer to "how do I test this endpoint?" for nearly a decade. It has millions of users, a polished interface, and integrations that touch almost every part of the development lifecycle. But a growing number of developers are quietly switching to something smaller: Bruno, an open-source, Git-friendly API client that stores collections as plain text files on disk.
+Postman has dominated the API testing space for the better part of a decade. According to Postman's own reporting, the platform passed 25 million registered developers in 2023, and its 2024 "State of the API" report—based on surveys of thousands of developers—found that roughly 60% of respondents used Postman as their primary API tool. That's a remarkable level of adoption for any developer tool.
 
-The pitch is simple. Postman keeps your collections in the cloud (or in a proprietary local store), syncs them through its own accounts, and has grown into a full API platform. Bruno keeps everything in folders you can commit to your repo, diff in a pull request, and read without opening the app. For teams that already live in Git, that difference matters more than any feature checklist.
+But adoption isn't the same as satisfaction. A recurring complaint in developer forums and Reddit threads is that Postman has grown into something closer to an enterprise collaboration platform than a lean HTTP client. In 2023, when Postman retired its Scratch Pad feature and pushed users toward cloud-synced workspaces, the backlash was loud enough that the company eventually restored an offline mode. That episode pushed a lot of developers to look at alternatives.
 
-Here's how the two compare on the things that actually affect day-to-day work.
+Bruno is one of the most visible of those alternatives. It positions itself as a fast, Git-friendly, offline-first API client. This comparison looks at how the two tools actually differ in daily use, and where each one makes sense.
 
-## The Core Philosophical Difference: Where Your Collections Live
+## What Each Tool Is
 
-Postman's model is cloud-first. Collections live on Postman's servers under your account, and collaboration happens through workspaces. There's a local cache, but the source of truth is the platform. If you want version history, you use Postman's built-in versioning or export files manually.
+**Postman** is a full API platform. It started as a Chrome extension for sending HTTP requests and evolved into a suite that covers request building, automated testing, mock servers, API documentation, monitoring, and team collaboration. It runs as a desktop app, a web app, and a set of CLI and CI integrations.
 
-Bruno's model is file-first. A collection is a folder on your filesystem. Each request is a `.bru` file—a readable, human-editable format that looks a bit like a config file. You version it with Git, review changes in pull requests, and share it the same way you share code.
+**Bruno** is an API client built around a deliberately smaller scope. It's an open-source desktop application (with a paid "Golden Edition" that adds features like a built-in AI assistant and additional collaboration tools) that stores collections as plain files on your local filesystem. There's no mandatory cloud account. You install it, create a collection, and start sending requests.
 
-This single design choice cascades into everything else. Merge conflicts? You resolve them in your editor like any other file. Onboarding a new developer? They clone the repo and open the folder. Auditing who changed a request and why? `git blame` answers it. No account required, no sync service in the middle.
+The philosophical difference matters more than the feature list: Postman treats your API work as data that lives in its platform, while Bruno treats it as files that live in your repo.
 
-Postman does offer a Git integration and a "local" mode in recent versions, but they feel bolted onto a cloud-native product. Bruno was built around the file-based assumption from the start.
+## The Git Workflow Difference
 
-## Feature Comparison at a Glance
+This is Bruno's headline feature, and it's worth understanding precisely.
 
-| Capability | Bruno | Postman |
-|---|---|---|
-| License | Open source (MIT) | Proprietary (free tier + paid) |
-| Storage | Local files, Git-friendly | Cloud workspaces |
-| Offline use | Fully offline | Limited offline support |
-| Scripting | JavaScript (pre/post-request) | JavaScript (pre/post-request) |
-| Environments & variables | Yes | Yes, more extensive |
-| Automated testing / CI | Bruno CLI | Newman + cloud runners |
-| Mock servers | Limited | Yes |
-| API documentation | Basic | Advanced, hosted docs |
-| Learning curve | Low | Moderate |
+In Postman, collections are stored in a proprietary JSON format managed by the app and, by default, synced to Postman's cloud. Exporting to a file is possible, but the exported format is verbose and not designed for human-readable diffs. Teams that want version-controlled collections typically rely on Postman's own versioning or export collections manually.
 
-## Scripting and Testing
+Bruno saves each request as a `.bru` file—a plain-text format that looks roughly like this:
 
-Both tools let you write JavaScript to run before and after requests—setting variables, asserting on responses, chaining requests. If you've written Postman tests, Bruno's syntax will feel familiar. Bruno uses a `bru` and `res` object model, and its assertion library covers the common cases: status codes, JSON body checks, response time, headers.
+```
+meta {
+  name: Get Users
+  type: http
+  seq: 1
+}
 
-Postman's scripting environment is more mature. It has a larger set of built-in libraries, more examples, and tighter integration with its collection runner and monitoring features. If your team runs complex test suites with data-driven iterations, Postman's tooling is deeper.
+get {
+  url: https://api.example.com/users
+  body: none
+  auth: none
+}
+```
 
-Bruno's answer is the Bruno CLI, which runs your collections headlessly. You can drop it into a CI pipeline with a single command and get pass/fail results. It's leaner than Newman (Postman's CLI runner) but covers the essentials for most teams. For teams that just need "run these requests on every PR and fail if the API breaks," Bruno is enough.
+Because these are ordinary files in ordinary folders, you can commit them to Git, review changes in a pull request, and see exactly which header or URL changed. For teams that already treat infrastructure as code, this feels natural. It also means collections work with any Git host—GitHub, GitLab, Bitbucket, or self-hosted—without a plugin.
 
-## Collaboration and Team Workflows
+Postman has responded to this demand with its own Git integration for its Enterprise plan, so the gap isn't absolute. But Bruno's approach is file-native from the ground up rather than bolted on.
 
-This is where the philosophies diverge most sharply.
+## Offline-First vs Cloud-First
 
-Postman's collaboration is real-time and platform-native. Shared workspaces, comments, role-based permissions, and a web dashboard make it easy for large organizations—including non-engineers like QA and product folks—to poke at APIs without installing anything. That's a genuine strength, especially in enterprises where API consumers aren't all developers.
+Bruno works fully offline by default. There's no login screen, no sync prompt, and no telemetry required to use the app. Your collections are on your disk, and that's the end of the story unless you opt into collaboration features.
 
-Bruno's collaboration is Git collaboration. You share collections by sharing a repo. Review happens in pull requests. Access control is your repo's access control. For engineering teams, this is elegant and familiar. For a mixed audience of PMs and support staff who don't use Git, it's a barrier.
+Postman's default posture is cloud-first. Workspaces sync to Postman's servers, which enables real-time collaboration but also means your API definitions—including any secrets you've stored in environments—live in a third party's infrastructure. Postman offers an offline Scratch Pad mode, and enterprise customers can configure data residency, but the architecture still assumes connectivity.
 
-Neither approach is objectively better. It depends on who needs to touch your API collections and how your team already works.
+For developers working with sensitive internal APIs, regulated industries, or air-gapped environments, Bruno's model removes a category of concern entirely.
 
-## Performance and Footprint
+## Performance and Resource Use
 
-Bruno is noticeably lighter. It's built on Electron too, but with a smaller surface area—no embedded cloud sync, no marketplace, no account layer. It launches faster and uses less memory. On a laptop already running a dozen containers and an IDE, that headroom is welcome.
+Developers consistently report that Bruno starts faster and uses less memory than Postman. Exact numbers vary by machine and collection size, but the pattern is consistent: Postman is an Electron app with a large feature surface, and it feels like it. Bruno is also built on Electron but ships a much smaller feature set, and the difference shows in startup time and idle memory.
 
-Postman has grown heavy over the years. The app bundles a lot: mock servers, monitors, documentation generators, a public API network. That's value if you use those features, overhead if you don't.
+If you keep an API client open all day alongside an IDE, a browser with dozens of tabs, and a Docker stack, the lighter footprint is a real quality-of-life improvement. It's not a dramatic difference on a modern 32GB machine, but on a constrained laptop it's noticeable.
 
-## Pricing
+## Feature Gaps Worth Knowing
 
-Bruno is free and open source. There's a paid "Bruno" tier for team features, but the core client costs nothing and has no seat limits.
+Bruno's focus comes with trade-offs. As of early 2025, the areas where Postman still leads clearly include:
 
-Postman's free tier is generous for individuals but caps collaboration features. Paid plans are per-user and scale with team size, which can add up quickly for larger organizations. If budget is a factor—and for many teams it is—Bruno's model is hard to beat.
+- **Automated testing and CI.** Postman's collection runner, Newman CLI, and monitoring integrations are mature. Bruno has a CLI (`bru`) for running collections in CI, but the surrounding ecosystem—reporters, integrations, scheduling—is thinner.
+- **Mock servers and API documentation.** Postman can generate hosted docs and mock endpoints from a collection. Bruno doesn't attempt this.
+- **Team collaboration.** Postman's shared workspaces, comments, and role-based access are built for organizations. Bruno's collaboration story is newer and relies more on Git workflows than on in-app features.
+- **Protocol breadth.** Postman supports GraphQL, gRPC, WebSocket, and SOAP alongside REST. Bruno's support has expanded over time but is less comprehensive.
+- **Ecosystem and integrations.** Postman integrates with a long list of CI providers, API gateways, and observability tools.
 
-## When to Choose Bruno
+None of these gaps are fatal for individual developers or small teams doing straightforward REST work. They matter more as team size and process complexity grow.
 
-- Your team already treats configuration as code and lives in Git.
-- You want collections versioned alongside the services they test.
-- You're cost-sensitive or prefer open-source tooling.
-- You value a fast, uncluttered client over a full API platform.
-- You need offline-first operation without account dependencies.
+## Who Should Use Which
 
-## When to Choose Postman
+**Bruno makes sense if** you work primarily with REST APIs, you want your collections in version control alongside your code, you value offline operation and local data ownership, and you don't need hosted documentation or heavy CI orchestration. Solo developers, small teams, and developers in security-sensitive environments are the natural fit.
 
-- You need real-time collaboration across technical and non-technical stakeholders.
-- You rely on mock servers, hosted documentation, or API monitoring.
-- Your organization has standardized on Postman and its governance features.
-- You want the largest ecosystem of examples, integrations, and community support.
+**Postman makes sense if** you need the full platform—automated test suites in CI, mock servers, generated documentation, and collaboration features for a larger organization. The free tier is generous, and the ecosystem is hard to match.
+
+Many developers, in practice, keep both installed: Bruno for day-to-day request work, Postman when a specific platform feature is needed.
 
 ## The Takeaway
 
-Bruno and Postman aren't really competing for the same job. Postman is an API platform with a client attached; Bruno is a focused client that respects your file system. If your workflow revolves around Git and you want your API collections treated like code, Bruno delivers a cleaner, lighter, more transparent experience. If you need a shared platform where anyone in the company can explore and document APIs, Postman's breadth still wins. Many developers keep both installed—Bruno for daily work in the repo, Postman for the occasional feature that only it provides. The right choice is the one that matches how your team already collaborates, not the one with the longer feature list.
+The Bruno vs Postman question isn't really about which tool is better—it's about which model fits how your team works. Postman bets that API work benefits from a centralized, collaborative platform, and for many organizations that bet pays off. Bruno bets that API collections are code, and should be treated like code: stored in files, versioned in Git, and owned by the developer. If that description matches your workflow, Bruno delivers it with less overhead and a smaller footprint. If you need the platform features, Postman still earns its place. Try Bruno on one real project before deciding—the file-based workflow either clicks immediately or it doesn't, and that reaction will tell you more than any feature comparison.
